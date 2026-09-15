@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Inscription - Campus Request{% endblock %}
+{% block content %}
+    <h2>Inscription Étudiante</h2>
+    <form method="POST">
+        <label>Adresse mail Skolae :</label>
+        <input type="email" name="email" placeholder="prenom.nom@myskolae.fr" required>
+        <label>Mot de passe :</label>
+        <input type="password" name="password" required>
+        <button type="submit">S'inscrire</button>
+    </form>
+    <p style="margin-top: 15px;">Déjà un compte ? <a href="{{ url_for('login') }}">Connexion</a></p>
+{% endblock %}

@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block title %}Accueil - Campus Request{% endblock %}
+{% block content %}
+    <h1>Campus Request</h1>
+    <p><a href="{{ url_for('register') }}">Créer un compte</a> | <a href="{{ url_for('login') }}">Se connecter</a></p>
+{% endblock %}
