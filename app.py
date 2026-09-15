@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from config import Config
 from extensions import db, migrate
 from sqlalchemy import text
@@ -20,6 +20,21 @@ migrate.init_app(app, db)
 @app.route("/")
 def home():
     return "Campus Request : WELCOME !"
+
+
+@app.route("/auth")
+def auth_home():
+    return render_template("connexion.html")
+
+
+@app.route("/login")
+def login():
+    return render_template("login.html")
+
+
+@app.route("/register")
+def register():
+    return render_template("register.html")
 
 
 @app.route("/test-db")
