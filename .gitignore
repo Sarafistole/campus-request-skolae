@@ -1,5 +1,7 @@
+*.crt
 .env
-venv/
-__pycache__/
 instance/
+*.key
 *.pyc
+__pycache__/
+venv/
