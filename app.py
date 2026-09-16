@@ -2,7 +2,7 @@ import secrets
 
 from flask import Flask, render_template, request, redirect, url_for, session
 from sqlalchemy import text
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 
 from config import Config
 from extensions import db, migrate
@@ -132,9 +132,46 @@ def confirm():
     return redirect(url_for("login"))
 
 
-@app.route("/login")
+@app.route("/login", methods=["GET", "POST"])
 def login():
-    return render_template("login.html")
+    if request.method == "GET":
+        return render_template("login.html")
+
+    email = request.form.get("email", "").strip().lower()
+    password = request.form.get("password", "")
+
+    student = Student.query.filter_by(email=email).first()
+
+    if student is None:
+        return render_template(
+            "login.html",
+            error="Email ou mot de passe incorrect."
+        ), 401
+
+    if not check_password_hash(student.password_hash, password):
+        return render_template(
+            "login.html",
+            error="Email ou mot de passe incorrect."
+        ), 401
+
+    if not student.is_confirmed:
+        return render_template(
+            "login.html",
+            error=(
+                "Veuillez confirmer votre adresse email "
+                "avant de vous connecter."
+            )
+        ), 403
+
+    session["student_id"] = student.id
+
+    return redirect(url_for("home"))
+
+
+@app.route("/logout")
+def logout():
+    session.pop("student_id", None)
+    return redirect(url_for("login"))
 
 
 @app.route("/test-db")

@@ -10,6 +10,10 @@
 
     <h1>Connexion</h1>
 
+    {% if error %}
+        <p>{{ error }}</p>
+    {% endif %}
+
     <form method="post">
         <label for="email">Email scolaire :</label>
         <input
