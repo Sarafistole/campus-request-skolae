@@ -1,13 +1,14 @@
 import os
 import json
 import random
-import urllib.request
+import subprocess
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
 
-load_dotenv()
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'cle_par_defaut')
@@ -30,7 +31,6 @@ class User(db.Model):
 def send_confirmation_email(destinataire, code):
     api_key = os.getenv('BREVO_API_KEY')
     sender = os.getenv('SMTP_SENDER', 'campusrequest.skolae@gmail.com')
-    url = "https://api.brevo.com/v3/smtp/email"
 
     payload = {
         "sender": {"email": sender, "name": "Campus Request"},
@@ -38,23 +38,27 @@ def send_confirmation_email(destinataire, code):
         "subject": "Code de validation - Campus Request",
         "htmlContent": f"""
             <h2>Bienvenue sur Campus Request</h2>
-            <p>Voici votre code de validation à 6 chiffres :</p>
+            <p>Voici votre code de validation :</p>
             <h1 style='color: #003366; letter-spacing: 4px;'>{code}</h1>
             <p>Ce code est requis pour activer votre compte.</p>
         """
     }
 
-    req = urllib.request.Request(
-        url,
-        data=json.dumps(payload).encode('utf-8'),
-        headers={
-            "accept": "application/json",
-            "api-key": api_key,
-            "content-type": "application/json"
-        }
-    )
-    with urllib.request.urlopen(req, timeout=10) as resp:
-        return resp.status in (200, 201)
+    cmd = [
+        "/usr/bin/curl", "--socks5-hostname", "127.0.0.1:1080",
+        "-s", "-S", "-X", "POST", "https://api.brevo.com/v3/smtp/email",
+        "-H", "accept: application/json",
+        "-H", f"api-key: {api_key}",
+        "-H", "content-type: application/json",
+        "-d", json.dumps(payload)
+    ]
+
+    res = subprocess.run(cmd, capture_output=True, text=True, timeout=15)
+    output = (res.stdout + " " + res.stderr).strip()
+    
+    if "messageId" not in output:
+        raise RuntimeError(f"Erreur API Brevo : {output}")
+    return True
 
 @app.route('/')
 def index():
