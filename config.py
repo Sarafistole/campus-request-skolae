@@ -13,9 +13,6 @@ class Config:
     # Elle doit être définie dans le fichier .env.
     SECRET_KEY = os.getenv("SECRET_KEY")
 
-    # Configuration SMTP pour l'envoi des codes de vérification.
-    SMTP_SERVER = os.getenv("SMTP_SERVER")
-    SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
-    SMTP_USER = os.getenv("SMTP_USER")
-    SMTP_PASSWORD = os.getenv("SMTP_PASSWORD")
+    # Configuration Brevo pour l'envoi des codes de vérification.
+    BREVO_API_KEY = os.getenv("BREVO_API_KEY")
     SMTP_SENDER = os.getenv("SMTP_SENDER")
