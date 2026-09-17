@@ -133,11 +133,15 @@ def dashboard():
         # ROUTING-02 :
         # détermine automatiquement les services recommandés
         # à partir des tags sélectionnés.
+        #
+        # Un tag peut recommander plusieurs services.
+        # Les doublons sont supprimés en conservant l'ordre.
         recommended_services = list(
             dict.fromkeys(
-                tag.target_service
+                service
                 for tag in selected_tags
-                if tag.target_service
+                for service in tag.target_services
+                if service
             )
         )
 

@@ -12,10 +12,14 @@ with app.app_context():
         raise RuntimeError("Aucun étudiant disponible pour les tests.")
 
     if request_type is None:
-        raise RuntimeError("Aucun type de demande disponible pour les tests.")
+        raise RuntimeError(
+            "Aucun type de demande disponible pour les tests."
+        )
 
     if len(tags) < 3:
-        raise RuntimeError("Il faut au moins 3 tags pour tester le routage.")
+        raise RuntimeError(
+            "Il faut au moins 3 tags pour tester le routage."
+        )
 
     student_id = student.id
     request_type_id = request_type.id
@@ -26,15 +30,25 @@ with app.app_context():
 
     # Sauvegarde des mappings actuels afin de pouvoir les restaurer.
     original_services = {
-        tag_1.id: tag_1.target_service,
-        tag_2.id: tag_2.target_service,
-        tag_3.id: tag_3.target_service,
+        tag_1.id: list(tag_1.target_services or []),
+        tag_2.id: list(tag_2.target_services or []),
+        tag_3.id: list(tag_3.target_services or []),
     }
 
-    # Mapping temporaire uniquement utilisé pour les tests.
-    tag_1.target_service = "SERVICE_TEST"
-    tag_2.target_service = "SERVICE_TEST"
-    tag_3.target_service = None
+    # Mappings temporaires uniquement utilisés pour les tests.
+    #
+    # tag_1 teste le routage multi-service.
+    # tag_2 partage SERVICE_TEST avec tag_1 pour tester
+    # la déduplication entre plusieurs tags.
+    # tag_3 ne possède aucun mapping.
+    tag_1.target_services = [
+        "SERVICE_TEST",
+        "SERVICE_TEST_2",
+    ]
+    tag_2.target_services = [
+        "SERVICE_TEST",
+    ]
+    tag_3.target_services = []
 
     db.session.commit()
 
@@ -66,29 +80,30 @@ try:
 
         # -----------------------------------------------------
         # TEST 1
-        # Un tag connu doit produire son service recommandé.
+        # Un tag peut produire plusieurs services recommandés.
         # -----------------------------------------------------
 
         response = create_ticket(
             client,
             [tag_1_id],
-            "TEST ROUTING 02 - mapping connu",
+            "TEST ROUTING 02 - multi service",
         )
 
         with app.app_context():
             ticket = Ticket.query.filter_by(
-                title="TEST ROUTING 02 - mapping connu"
+                title="TEST ROUTING 02 - multi service"
             ).first()
 
             success = (
                 response.status_code == 302
                 and ticket is not None
-                and ticket.recommended_services == ["SERVICE_TEST"]
+                and ticket.recommended_services
+                == ["SERVICE_TEST", "SERVICE_TEST_2"]
             )
 
             print(
                 "OK" if success else "ECHEC",
-                "| Mapping connu              |",
+                "| Multi-service              |",
                 f"status={response.status_code}",
                 f"routing={ticket.recommended_services if ticket else None}",
             )
@@ -124,7 +139,7 @@ try:
 
         # -----------------------------------------------------
         # TEST 3
-        # Deux tags vers le même service doivent être dédupliqués.
+        # Plusieurs tags ne doivent pas dupliquer un service.
         # -----------------------------------------------------
 
         response = create_ticket(
@@ -141,7 +156,8 @@ try:
             success = (
                 response.status_code == 302
                 and ticket is not None
-                and ticket.recommended_services == ["SERVICE_TEST"]
+                and ticket.recommended_services
+                == ["SERVICE_TEST", "SERVICE_TEST_2"]
             )
 
             print(
@@ -155,8 +171,7 @@ finally:
     # ---------------------------------------------------------
     # Nettoyage
     # ---------------------------------------------------------
-    # Les tickets sont supprimés via l'ORM afin que SQLAlchemy
-    # nettoie d'abord leurs associations dans ticket_tags.
+    # Les tickets de test sont supprimés avec leurs associations.
     # Les mappings temporaires des tags sont ensuite restaurés.
     # ---------------------------------------------------------
 
@@ -166,15 +181,13 @@ finally:
         ).all()
 
         for ticket in test_tickets:
-            # Supprime explicitement les associations ticket_tags
-            # avant de supprimer le ticket.
             ticket.tags.clear()
             db.session.delete(ticket)
 
-        for tag_id, original_service in original_services.items():
+        for tag_id, original_service_list in original_services.items():
             tag = db.session.get(Tag, tag_id)
 
             if tag is not None:
-                tag.target_service = original_service
+                tag.target_services = original_service_list
 
         db.session.commit()

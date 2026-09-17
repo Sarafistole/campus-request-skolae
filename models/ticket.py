@@ -81,8 +81,7 @@ class Ticket(db.Model):
     )
 
     # Services administratifs recommandés par le routage automatique.
-    #
-    # Cette liste est calculée à partir des target_service
+    # Cette liste est calculée à partir des target_services
     # des tags sélectionnés lors de la création du ticket.
     #
     # Exemple :
