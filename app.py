@@ -7,6 +7,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from config import Config
 from extensions import db, migrate
 from models import Student, Admin, RequestType, Tag, Ticket
+from models.ticket import TICKET_STATUSES
 from services.email_service import send_confirmation_email
 
 
@@ -451,6 +452,41 @@ def admin_ticket_demo():
         return redirect(url_for("admin_login"))
 
     return render_template("admin-ticket-detail.html")
+
+@app.route("/admin/tickets/<string:public_id>/status", methods=["POST"])
+def admin_ticket_status(public_id):
+    # La modification du statut est réservée aux administrateurs connectés.
+    admin_id = session.get("admin_id")
+
+    if admin_id is None:
+        return redirect(url_for("admin_login"))
+
+    admin = db.session.get(Admin, admin_id)
+
+    if admin is None:
+        session.pop("admin_id", None)
+        return redirect(url_for("admin_login"))
+
+    # L'identifiant public est utilisé afin de ne pas exposer
+    # l'identifiant numérique interne du ticket.
+    ticket = Ticket.query.filter_by(public_id=public_id).first()
+
+    if ticket is None:
+        return "Ticket introuvable.", 404
+
+    new_status = request.form.get("status", "").strip().upper()
+
+    # La validation doit être effectuée côté serveur :
+    # le contenu d'un formulaire HTML peut être falsifié.
+    if new_status not in TICKET_STATUSES:
+        return "Statut invalide.", 400
+
+    ticket.status = new_status
+    db.session.commit()
+
+    # ADMIN-02 remplacera ensuite cette redirection par
+    # la véritable page de détail du ticket.
+    return redirect(url_for("admin_ticket_demo"))
 
 @app.route("/admin/login", methods=["GET", "POST"])
 def admin_login():

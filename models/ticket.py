@@ -4,6 +4,19 @@ import uuid
 from extensions import db
 
 
+# Statuts autorisés pour le traitement administratif des tickets.
+#
+# Les clés sont les valeurs techniques enregistrées en base de données.
+# Les valeurs sont les libellés destinés à l'affichage.
+TICKET_STATUSES = {
+    "NEW": "À examiner",
+    "IN_PROGRESS": "En cours de traitement",
+    "FORWARDED": "Transmis",
+    "RESOLVED": "Résolu",
+    "DISMISSED": "Classé sans suite",
+}
+
+
 # Table d'association entre les tickets et leurs tags.
 # Un ticket peut posséder plusieurs tags et un tag peut être
 # associé à plusieurs tickets.
@@ -85,7 +98,7 @@ class Ticket(db.Model):
     # des tags sélectionnés lors de la création du ticket.
     #
     # Exemple :
-    # ["Scolarité", "Vie étudiante"]
+    # ["Scolarité", "Pédagogie"]
     #
     # Le résultat est enregistré sur le ticket afin de permettre
     # une correction manuelle ultérieure par un modérateur
@@ -103,7 +116,11 @@ class Ticket(db.Model):
         nullable=True
     )
 
-    # Statut du ticket.
+    # Statut de traitement du ticket.
+    # Les valeurs autorisées sont définies dans TICKET_STATUSES.
+    #
+    # Valeur initiale :
+    # NEW -> À examiner
     status = db.Column(
         db.String(50),
         nullable=False,
