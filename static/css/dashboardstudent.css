@@ -1,0 +1,827 @@
+/* =========================================================
+   SKOLAE — CAMPUS REQUEST
+   Dashboard étudiant
+   ========================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+
+/* =========================================================
+   VARIABLES
+   ========================================================= */
+
+:root {
+    --bg: #050816;
+    --bg-secondary: #0b1020;
+    --card: #111827;
+    --card-hover: #151f33;
+
+    --border: rgba(148, 163, 184, 0.14);
+
+    --text: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+
+    --blue: #3b82f6;
+    --blue-light: #60a5fa;
+    --purple: #8b5cf6;
+
+    --success: #22c55e;
+    --danger: #ef4444;
+
+    --radius: 18px;
+    --radius-small: 12px;
+
+    --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+}
+
+
+/* =========================================================
+   RESET
+   ========================================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+    background:
+        radial-gradient(
+            circle at 50% 0%,
+            rgba(79, 140, 255, 0.12),
+            transparent 35%
+        ),
+        var(--bg);
+
+    color: var(--text);
+
+    font-family: "Inter", sans-serif;
+
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   INTRO
+   ========================================================= */
+
+.intro {
+    min-height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    position: relative;
+
+    padding: 32px 7vw 70px;
+
+    overflow: hidden;
+
+    border-bottom: 1px solid var(--border);
+
+    background:
+        radial-gradient(
+            circle at 50% 35%,
+            rgba(59, 130, 246, 0.07),
+            transparent 40%
+        );
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.header {
+    width: 100%;
+    max-width: 1200px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.header h1 {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+
+    background: linear-gradient(
+        90deg,
+        #ffffff,
+        #a5b4fc
+    );
+
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+
+/* =========================================================
+   MENU BUTTON
+   ========================================================= */
+
+.menu-button {
+    width: 46px;
+    height: 46px;
+
+    border: 1px solid var(--border);
+    border-radius: 12px;
+
+    background: rgba(17, 24, 39, 0.8);
+
+    color: var(--text);
+
+    font-size: 20px;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease,
+        background 0.2s ease;
+}
+
+.menu-button:hover {
+    transform: translateY(-2px);
+
+    border-color: rgba(96, 165, 250, 0.5);
+
+    background: var(--card-hover);
+}
+
+
+/* =========================================================
+   MENU
+   ========================================================= */
+
+.menu {
+    position: absolute;
+
+    top: 88px;
+    right: 7vw;
+
+    width: 260px;
+
+    display: flex;
+    flex-direction: column;
+
+    padding: 10px;
+
+    background: rgba(17, 24, 39, 0.96);
+
+    border: 1px solid var(--border);
+    border-radius: 16px;
+
+    box-shadow: var(--shadow);
+
+    backdrop-filter: blur(20px);
+
+    opacity: 0;
+    visibility: hidden;
+
+    transform: translateY(-10px);
+
+    transition:
+        opacity 0.2s ease,
+        transform 0.2s ease,
+        visibility 0.2s ease;
+
+    z-index: 20;
+}
+
+.menu.active {
+    opacity: 1;
+    visibility: visible;
+
+    transform: translateY(0);
+}
+
+.menu a {
+    padding: 13px 15px;
+
+    color: var(--text-secondary);
+
+    text-decoration: none;
+
+    font-size: 14px;
+    font-weight: 500;
+
+    border-radius: 10px;
+
+    transition:
+        color 0.2s ease,
+        background 0.2s ease;
+}
+
+.menu a:hover {
+    color: var(--text);
+
+    background: rgba(59, 130, 246, 0.1);
+}
+
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+.intro h2 {
+    max-width: 950px;
+
+    margin-top: 110px;
+
+    text-align: center;
+
+    font-size: clamp(42px, 6vw, 78px);
+
+    line-height: 1.05;
+
+    letter-spacing: -0.055em;
+
+    font-weight: 800;
+
+    background:
+        linear-gradient(
+            90deg,
+            #4f8cff 0%,
+            #6366f1 45%,
+            #8b5cf6 100%
+        );
+
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+
+/* =========================================================
+   HERO TEXT
+   ========================================================= */
+
+.intro > p {
+    max-width: 900px;
+
+    margin-top: 32px;
+
+    text-align: center;
+
+    color: var(--text-secondary);
+
+    font-size: 17px;
+
+    line-height: 1.8;
+}
+
+.intro > p + p {
+    margin-top: 14px;
+}
+
+.intro > p:last-of-type {
+    margin-top: 48px;
+
+    color: var(--text);
+
+    font-weight: 700;
+
+    font-size: 16px;
+}
+
+
+/* =========================================================
+   SCROLL INDICATOR
+   ========================================================= */
+
+.scroll-indicator {
+    margin-top: auto;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    gap: 8px;
+
+    color: var(--blue-light);
+
+    font-size: 13px;
+    font-weight: 600;
+
+    letter-spacing: 0.02em;
+}
+
+.scroll-indicator span:last-child {
+    font-size: 28px;
+
+    line-height: 1;
+
+    animation: scrollArrow 1.8s ease-in-out infinite;
+}
+
+@keyframes scrollArrow {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(7px);
+    }
+}
+
+
+/* =========================================================
+   SECTION DEMANDE
+   ========================================================= */
+
+.request {
+    width: min(900px, calc(100% - 40px));
+
+    margin: 90px auto 120px;
+
+    padding: 42px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(17, 24, 39, 0.96),
+            rgba(11, 16, 32, 0.96)
+        );
+
+    border: 1px solid var(--border);
+
+    border-radius: 24px;
+
+    box-shadow: var(--shadow);
+}
+
+
+/* =========================================================
+   TITRE SECTION
+   ========================================================= */
+
+.request > h2 {
+    margin-bottom: 36px;
+
+    font-size: 32px;
+
+    letter-spacing: -0.04em;
+
+    font-weight: 800;
+}
+
+.request > h2::after {
+    content: "";
+
+    display: block;
+
+    width: 48px;
+    height: 4px;
+
+    margin-top: 12px;
+
+    border-radius: 99px;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--blue),
+            var(--purple)
+        );
+}
+
+
+/* =========================================================
+   ERREUR
+   ========================================================= */
+
+.form-error {
+    margin-bottom: 25px;
+
+    padding: 14px 16px;
+
+    color: #fecaca;
+
+    background: rgba(239, 68, 68, 0.08);
+
+    border: 1px solid rgba(239, 68, 68, 0.3);
+
+    border-radius: 12px;
+
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   FORMULAIRE
+   ========================================================= */
+
+form {
+    display: flex;
+    flex-direction: column;
+
+    gap: 30px;
+}
+
+
+/* =========================================================
+   BLOCS
+   ========================================================= */
+
+.request-title,
+.request-type,
+.request-description,
+.request-scope,
+.concerned-person,
+.request-tags-section {
+    display: flex;
+    flex-direction: column;
+
+    gap: 10px;
+}
+
+
+/* =========================================================
+   LABELS / TITRES
+   ========================================================= */
+
+label,
+.request-type h3,
+.request-scope h3,
+.request-tags-section h3 {
+    color: var(--text);
+
+    font-size: 14px;
+
+    font-weight: 700;
+}
+
+.request-type h3,
+.request-scope h3,
+.request-tags-section h3 {
+    margin-bottom: 2px;
+}
+
+
+/* =========================================================
+   INPUTS
+   ========================================================= */
+
+input[type="text"],
+select,
+textarea {
+    width: 100%;
+
+    padding: 15px 17px;
+
+    color: var(--text);
+
+    background: rgba(5, 8, 22, 0.65);
+
+    border: 1px solid rgba(148, 163, 184, 0.17);
+
+    border-radius: 12px;
+
+    outline: none;
+
+    font-family: inherit;
+    font-size: 14px;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+}
+
+input[type="text"]::placeholder,
+textarea::placeholder {
+    color: var(--text-muted);
+}
+
+input[type="text"]:focus,
+select:focus,
+textarea:focus {
+    border-color: rgba(79, 140, 255, 0.75);
+
+    background: rgba(11, 16, 32, 0.9);
+
+    box-shadow:
+        0 0 0 3px rgba(59, 130, 246, 0.12);
+}
+
+
+/* =========================================================
+   SELECT
+   ========================================================= */
+
+select {
+    cursor: pointer;
+}
+
+select option {
+    background: #111827;
+
+    color: var(--text);
+}
+
+
+/* =========================================================
+   TEXTAREA
+   ========================================================= */
+
+textarea {
+    min-height: 150px;
+
+    resize: vertical;
+}
+
+
+/* =========================================================
+   SCOPE
+   ========================================================= */
+
+.request-scope {
+    gap: 10px;
+}
+
+.request-scope label {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 14px 16px;
+
+    background: rgba(5, 8, 22, 0.45);
+
+    border: 1px solid var(--border);
+
+    border-radius: 12px;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.request-scope label:hover {
+    transform: translateX(3px);
+
+    background: rgba(59, 130, 246, 0.07);
+
+    border-color: rgba(96, 165, 250, 0.35);
+}
+
+.request-scope label span {
+    color: var(--text-secondary);
+
+    font-size: 14px;
+
+    font-weight: 500;
+}
+
+
+/* =========================================================
+   RADIO
+   ========================================================= */
+
+input[type="radio"] {
+    width: 17px;
+    height: 17px;
+
+    accent-color: var(--blue);
+
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   TAGS
+   ========================================================= */
+
+.tags-help {
+    margin-top: -4px;
+
+    color: var(--text-muted);
+
+    font-size: 13px;
+}
+
+.request-tags {
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 10px;
+
+    margin-top: 5px;
+}
+
+.tag-checkbox {
+    cursor: pointer;
+}
+
+.tag-checkbox input {
+    position: absolute;
+
+    opacity: 0;
+
+    pointer-events: none;
+}
+
+.tag-checkbox span {
+    display: block;
+
+    padding: 9px 14px;
+
+    color: var(--text-secondary);
+
+    background: rgba(5, 8, 22, 0.55);
+
+    border: 1px solid var(--border);
+
+    border-radius: 999px;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    transition:
+        color 0.2s ease,
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.tag-checkbox:hover span {
+    transform: translateY(-2px);
+
+    border-color: rgba(96, 165, 250, 0.4);
+
+    color: var(--text);
+}
+
+.tag-checkbox input:checked + span {
+    color: #ffffff;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(59, 130, 246, 0.3),
+            rgba(139, 92, 246, 0.3)
+        );
+
+    border-color: rgba(99, 102, 241, 0.65);
+
+    box-shadow:
+        0 8px 25px rgba(59, 130, 246, 0.12);
+}
+
+
+/* =========================================================
+   BOUTON ENVOYER
+   ========================================================= */
+
+.request-submit {
+    margin-top: 8px;
+}
+
+.submit-button {
+    width: 100%;
+
+    padding: 17px 24px;
+
+    border: none;
+    border-radius: 13px;
+
+    color: #ffffff;
+
+    background:
+        linear-gradient(
+            100deg,
+            #3b82f6,
+            #6366f1,
+            #8b5cf6
+        );
+
+    font-family: inherit;
+
+    font-size: 15px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 14px 35px rgba(59, 130, 246, 0.2);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        filter 0.2s ease;
+}
+
+.submit-button:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 18px 45px rgba(99, 102, 241, 0.28);
+
+    filter: brightness(1.08);
+}
+
+.submit-button:active {
+    transform: translateY(0);
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .intro {
+        padding: 24px 24px 50px;
+    }
+
+    .intro h2 {
+        margin-top: 90px;
+
+        font-size: clamp(38px, 11vw, 58px);
+    }
+
+    .intro > p {
+        font-size: 15px;
+    }
+
+    .menu {
+        right: 24px;
+    }
+
+    .request {
+        width: calc(100% - 28px);
+
+        margin: 50px auto 70px;
+
+        padding: 26px 20px;
+
+        border-radius: 18px;
+    }
+
+    .request > h2 {
+        font-size: 27px;
+    }
+}
+
+
+@media (max-width: 480px) {
+
+    .header h1 {
+        font-size: 17px;
+    }
+
+    .menu-button {
+        width: 42px;
+        height: 42px;
+    }
+
+    .intro h2 {
+        margin-top: 70px;
+
+        font-size: 38px;
+    }
+
+    .intro > p {
+        font-size: 14px;
+
+        line-height: 1.7;
+    }
+
+    .intro > p:last-of-type {
+        font-size: 14px;
+    }
+
+    .request {
+        padding: 22px 16px;
+    }
+
+    .request-tags {
+        gap: 7px;
+    }
+
+    .tag-checkbox span {
+        padding: 8px 11px;
+
+        font-size: 12px;
+    }
+}

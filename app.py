@@ -1,3 +1,4 @@
+from dbm import error
 import secrets
 
 from flask import Flask, render_template, request, redirect, url_for, session
@@ -293,20 +294,15 @@ def register():
         student.confirmation_code = confirmation_code
 
     try:
-        # On tente l'envoi avant de valider définitivement la transaction.
         send_confirmation_email(email, confirmation_code)
         db.session.commit()
-    except Exception:
+    except Exception as error:
         db.session.rollback()
-
+        print("ERREUR ENVOI EMAIL :", repr(error))
         return render_template(
             "register.html",
-            error=(
-                "Impossible d'envoyer le code de vérification. "
-                "Veuillez réessayer plus tard."
-            )
+            error="Impossible d'envoyer le code de vérification. Veuillez réessayer plus tard.",
         ), 503
-
     session["pending_student_email"] = email
 
     return redirect(url_for("confirm"))
@@ -417,6 +413,37 @@ def login():
 
     return redirect(url_for("dashboard"))
 
+@app.route("/admin/dashboard")
+def admin_dashboard():
+    admin_id = session.get("admin_id")
+
+    if admin_id is None:
+        return redirect(url_for("admin_login"))
+
+    admin = db.session.get(Admin, admin_id)
+
+    if admin is None:
+        session.pop("admin_id", None)
+        return redirect(url_for("admin_login"))
+
+    return render_template("admin-dashboard.html")
+
+
+@app.route("/admin/tickets/demo")
+def admin_ticket_demo():
+    admin_id = session.get("admin_id")
+
+    if admin_id is None:
+        return redirect(url_for("admin_login"))
+
+    admin = db.session.get(Admin, admin_id)
+
+    if admin is None:
+        session.pop("admin_id", None)
+        return redirect(url_for("admin_login"))
+
+    return render_template("admin-ticket-detail.html")
+
 @app.route("/admin/login", methods=["GET", "POST"])
 def admin_login():
     if request.method == "GET":
@@ -441,7 +468,7 @@ def admin_login():
 
     session["admin_id"] = admin.id
 
-    return redirect(url_for("home"))
+    return redirect(url_for("admin_dashboard"))
 
 
 @app.route("/logout")
