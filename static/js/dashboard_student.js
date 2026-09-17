@@ -5,16 +5,10 @@
 const menuButton = document.querySelector(".menu-button");
 const menu = document.querySelector(".menu");
 
-menuButton.addEventListener("click", () => {
-
-    if (menu.style.display === "flex") {
-        menu.style.display = "none";
-    } else {
-        menu.style.display = "flex";
-    }
-
+menuButton.addEventListener("click", (event) => {
+    event.stopPropagation();
+    menu.classList.toggle("active");
 });
-
 
 /* =========================
    FERMER LE MENU EN CLIQUANT AILLEURS
@@ -26,7 +20,7 @@ document.addEventListener("click", (event) => {
         !menu.contains(event.target) &&
         !menuButton.contains(event.target)
     ) {
-        menu.style.display = "none";
+        menu.classList.remove("active");
     }
 
 });

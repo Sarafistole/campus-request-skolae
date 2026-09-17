@@ -1,34 +1,183 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Campus Request | Vérification</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
+
 <body>
-    <h1>Vérification de l'adresse email</h1>
 
-    <p>
-        Un code de vérification a été envoyé à votre adresse email scolaire.
-    </p>
+    <main class="container">
 
-    {% if error %}
-        <p>{{ error }}</p>
-    {% endif %}
+        <div class="background-orb orb-blue"></div>
+        <div class="background-orb orb-purple"></div>
+        <div class="background-grid"></div>
 
-    <form method="post">
-        <label for="confirmation_code">Code de vérification :</label>
-        <input
-            type="text"
-            id="confirmation_code"
-            name="confirmation_code"
-            inputmode="numeric"
-            pattern="[0-9]{6}"
-            maxlength="6"
-            required
-        >
+        <div class="skolae-logo">
 
-        <button type="submit">Confirmer</button>
-    </form>
+            <div class="logo-text">
+                SKOLAE
+            </div>
+
+            <div class="eyes">
+
+                <div class="eye">
+                    <div class="pupil"></div>
+                </div>
+
+                <div class="eye">
+                    <div class="pupil"></div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <section class="welcome-section">
+
+            <div class="welcome-badge">
+                ✦ VÉRIFICATION
+            </div>
+
+            <div class="decoration"></div>
+
+            <h1>
+                Vérifie ton
+                <span>adresse email</span>
+            </h1>
+
+            <p class="description">
+                Un code de vérification à 6 chiffres a été envoyé
+                à ton adresse email scolaire.
+            </p>
+
+            {% if error %}
+
+                <div class="error-message">
+                    {{ error }}
+                </div>
+
+            {% endif %}
+
+            <form method="post" class="auth-form">
+
+                <div class="form-group">
+
+                    <label for="confirmation_code">
+                        Code de vérification
+                    </label>
+
+                    <input
+                        type="text"
+                        id="confirmation_code"
+                        name="confirmation_code"
+                        inputmode="numeric"
+                        pattern="[0-9]{6}"
+                        maxlength="6"
+                        minlength="6"
+                        autocomplete="one-time-code"
+                        placeholder="000000"
+                        required
+                        autofocus
+                    >
+
+                </div>
+
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                    id="verifyButton"
+                >
+                    <span>Vérifier mon compte</span>
+                    <span class="arrow">→</span>
+                </button>
+
+            </form>
+            
+            <a  
+            
+                href="{{ url_for('register') }}"
+                class="back-link"
+            >
+                ← Revenir à l'inscription
+            </a>
+
+            <p class="bottom-text">
+                Campus Request · Espace sécurisé
+            </p>
+
+        </section>
+
+    </main>
+
+    <script>
+
+        const pupils =
+            document.querySelectorAll(".pupil");
+
+        const eyes =
+            document.querySelectorAll(".eye");
+
+        document.addEventListener("mousemove", function (event) {
+
+            pupils.forEach(function (pupil) {
+
+                const eye = pupil.parentElement;
+                const eyeRect = eye.getBoundingClientRect();
+
+                const eyeCenterX = eyeRect.left + eyeRect.width / 2;
+                const eyeCenterY = eyeRect.top + eyeRect.height / 2;
+
+                const angle = Math.atan2(
+                    event.clientY - eyeCenterY,
+                    event.clientX - eyeCenterX
+                );
+
+                const distance = 5;
+
+                const x = Math.cos(angle) * distance;
+                const y = Math.sin(angle) * distance;
+
+                pupil.style.transform = `translate(${x}px, ${y}px)`;
+
+            });
+
+        });
+
+        function blink() {
+
+    eyes.forEach(function (eye) {
+        eye.classList.add("closed");
+    });
+
+    setTimeout(function () {
+
+        eyes.forEach(function (eye) {
+            eye.classList.remove("closed");
+        });
+
+    }, 180);
+}
+
+        setInterval(blink, 5000);
+
+        const verifyButton = document.getElementById("verifyButton");
+
+        verifyButton.addEventListener("click", function () {
+
+            eyes.forEach(function (eye) {
+                eye.classList.add("closed");
+            });
+
+        });
+
+    </script>
+
 </body>
+
 </html>
