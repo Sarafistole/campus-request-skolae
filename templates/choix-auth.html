@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Campus Request | Choix du profil</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <main class="container">
+
+        <div class="background-orb orb-blue"></div>
+        <div class="background-orb orb-purple"></div>
+        <div class="background-grid"></div>
+
+        <!-- =========================
+             LOGO SKOLAE
+             ========================= -->
+
+        <div class="skolae-logo">
+
+            <div class="logo-text">
+                SKOLAE
+            </div>
+
+            <div class="eyes">
+
+                <div class="eye">
+                    <div class="pupil"></div>
+                </div>
+
+                <div class="eye">
+                    <div class="pupil"></div>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Choix du profil -->
+        <section class="welcome-section">
+
+            <div class="welcome-badge">
+                ✦ CONNEXION
+            </div>
+
+            <div class="decoration"></div>
+
+            <h1>
+                Selectionez votre 
+                <span>profil</span>
+            </h1>
+
+            <p class="description">
+                Sélectionnez votre profil pour accéder
+                à votre espace Campus Request.
+            </p>
+
+
+            <div class="buttons">
+
+                <!-- Élève -->
+                <a href="{{ url_for('login') }}"
+                   class="btn btn-primary"
+                   id="loginButton">
+
+                    <span>🎓 Élève</span>
+                    <span class="arrow">→</span>
+
+                </a>
+
+
+                <!-- Administrateur -->
+                <a href="{{ url_for('admin_login') }}"
+                   class="btn btn-secondary"
+                   id="adminButton">
+
+                    <span>🛡️ Administrateur</span>
+                    <span class="arrow">→</span>
+
+                </a>
+
+            </div>
+
+
+            <p class="bottom-text">
+                Vous pourrez revenir en arrière à tout moment
+            </p>
+
+        </section>
+
+    </main>
+
+
+    <!-- =========================
+         JAVASCRIPT
+         YEUX QUI SUIVENT LA SOURIS
+         ========================= -->
+
+    <script>
+
+        const pupils =
+            document.querySelectorAll(".pupil");
+
+        const eyes =
+            document.querySelectorAll(".eye");
+
+
+        document.addEventListener("mousemove", function (event) {
+
+            pupils.forEach(function (pupil) {
+
+                const eye = pupil.parentElement;
+                const eyeRect = eye.getBoundingClientRect();
+
+                const eyeCenterX = eyeRect.left + eyeRect.width / 2;
+                const eyeCenterY = eyeRect.top + eyeRect.height / 2;
+
+                const angle = Math.atan2(
+                    event.clientY - eyeCenterY,
+                    event.clientX - eyeCenterX
+                );
+
+                const distance = 5;
+
+                const x = Math.cos(angle) * distance;
+                const y = Math.sin(angle) * distance;
+
+                pupil.style.transform = `translate(${x}px, ${y}px)`;
+
+            });
+
+        });
+
+
+        /* =========================
+           CLIGNEMENT AUTOMATIQUE
+           ========================= */
+
+        function blink() {
+
+            eyes.forEach(function (eye) {
+                eye.classList.add("closed");
+            });
+
+            setTimeout(function () {
+
+                eyes.forEach(function (eye) {
+                    eye.classList.remove("closed");
+                });
+
+            }, 180);
+
+        }
+
+        setInterval(blink, 5000);
+
+
+        /* =========================
+           FERMETURE DES YEUX AU CLIC
+           ========================= */
+
+        document.getElementById("loginButton")
+            .addEventListener("click", function () {
+                eyes.forEach(function (eye) {
+                    eye.classList.add("closed");
+                });
+            });
+
+        document.getElementById("adminButton")
+            .addEventListener("click", function () {
+                eyes.forEach(function (eye) {
+                    eye.classList.add("closed");
+                });
+            });
+
+    </script>
+
+</body>
+</html>

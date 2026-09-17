@@ -1,42 +1,284 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Campus Request | Connexion</title>
+
+    <title>Campus Request | Connexion élève</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
+
 <body>
-    <a href="{{ url_for('auth_home') }}">Retour</a>
 
-    <h1>Connexion</h1>
+    <main class="container">
 
-    {% if error %}
-        <p>{{ error }}</p>
-    {% endif %}
+        <!-- Décorations -->
+        <div class="background-orb orb-blue"></div>
+        <div class="background-orb orb-purple"></div>
+        <div class="background-grid"></div>
 
-    <form method="post">
-        <label for="email">Email scolaire :</label>
-        <input
-            type="email"
-            id="email"
-            name="email"
-            required
-        >
 
-        <br>
+        <!-- =========================
+             LOGO SKOLAE
+             ========================= -->
 
-        <label for="password">Mot de passe :</label>
-        <input
-            type="password"
-            id="password"
-            name="password"
-            minlength="12"
-            required
-        >
+        <div class="skolae-logo">
 
-        <br>
+            <div class="logo-text">
+                SKOLAE
+            </div>
 
-        <button type="submit">Se connecter</button>
-    </form>
+            <div class="eyes">
+
+                <div class="eye">
+                    <div class="pupil"></div>
+                </div>
+
+                <div class="eye">
+                    <div class="pupil"></div>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             FORMULAIRE
+             ========================= -->
+
+        <section class="welcome-section">
+
+            <div class="welcome-badge">
+                ✦ ESPACE ÉLÈVE
+            </div>
+
+            <div class="decoration"></div>
+
+            <h1>
+                Connexion
+                <span>Élève</span>
+            </h1>
+
+            <p class="description">
+                Connectez-vous à votre espace étudiant
+                pour gérer vos demandes auprès de votre établissement.
+            </p>
+
+
+            <!-- =========================
+                 MESSAGE D'ERREUR
+                 ========================= -->
+
+            {% if error %}
+
+                <div class="error-message">
+                    {{ error }}
+                </div>
+
+            {% endif %}
+
+
+            <!-- =========================
+                 FORMULAIRE
+                 ========================= -->
+
+            <form method="post" class="auth-form">
+
+                <div class="form-group">
+
+                    <label for="email">
+                        Email scolaire
+                    </label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="prenom.nom@myskolae.fr"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="password">
+                        Mot de passe
+                    </label>
+
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Votre mot de passe"
+                        minlength="12"
+                        required
+                    >
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                    id="loginButton"
+                >
+                    <span>Se connecter</span>
+                    <span class="arrow">→</span>
+                </button>
+
+            </form>
+
+
+            <!-- =========================
+                 RETOUR
+                 ========================= -->
+
+            <a
+                href="{{ url_for('choix_auth') }}"
+                class="back-link"
+            >
+                ← Retour au choix du compte
+            </a>
+
+
+            <p class="bottom-text">
+                Campus Request · Espace sécurisé
+            </p>
+
+        </section>
+
+    </main>
+
+
+    <!-- =========================
+         JAVASCRIPT
+         YEUX
+         ========================= -->
+
+    <script>
+
+        const pupils =
+            document.querySelectorAll(".pupil");
+
+        const eyes =
+            document.querySelectorAll(".eye");
+
+
+        /* =========================
+           LES YEUX SUIVENT LA SOURIS
+           ========================= */
+
+        document.addEventListener(
+            "mousemove",
+            function (event) {
+
+                pupils.forEach(function (pupil) {
+
+                    const eye =
+                        pupil.parentElement;
+
+                    const eyeRect =
+                        eye.getBoundingClientRect();
+
+
+                    const eyeCenterX =
+                        eyeRect.left
+                        + eyeRect.width / 2;
+
+                    const eyeCenterY =
+                        eyeRect.top
+                        + eyeRect.height / 2;
+
+
+                    const angle =
+                        Math.atan2(
+                            event.clientY - eyeCenterY,
+                            event.clientX - eyeCenterX
+                        );
+
+
+                    const distance = 5;
+
+
+                    const x =
+                        Math.cos(angle)
+                        * distance;
+
+                    const y =
+                        Math.sin(angle)
+                        * distance;
+
+
+                    pupil.style.transform =
+                        `translate(${x}px, ${y}px)`;
+
+                });
+
+            }
+        );
+
+
+        /* =========================
+           CLIGNEMENT
+           ========================= */
+
+        function blink() {
+
+            eyes.forEach(function (eye) {
+
+                eye.classList.add("closed");
+
+            });
+
+
+            setTimeout(function () {
+
+                eyes.forEach(function (eye) {
+
+                    eye.classList.remove("closed");
+
+                });
+
+            }, 180);
+
+        }
+
+
+        setInterval(
+            blink,
+            5000
+        );
+
+
+        /* =========================
+           FERMETURE DES YEUX
+           LORS DE LA CONNEXION
+           ========================= */
+
+        const loginButton =
+            document.getElementById("loginButton");
+
+
+        loginButton.addEventListener(
+            "click",
+            function () {
+
+                eyes.forEach(function (eye) {
+
+                    eye.classList.add("closed");
+
+                });
+
+            }
+        );
+
+    </script>
+
 </body>
+
 </html>

@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Campus Request | Créer un compte</title>
+    <title>Campus Request | Connexion administrateur</title>
 
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
@@ -45,31 +45,27 @@
 
 
         <!-- =========================
-             INSCRIPTION
+             CONNEXION ADMIN
              ========================= -->
 
         <section class="welcome-section">
 
             <div class="welcome-badge">
-                ✦ CRÉATION DE COMPTE
+                ✦ ESPACE ADMINISTRATEUR
             </div>
 
             <div class="decoration"></div>
 
             <h1>
-                Créer un compte
-                <span>Élève</span>
+                Connexion
+                <span>Administrateur</span>
             </h1>
 
             <p class="description">
-                Créez votre compte étudiant pour accéder
-                à Campus Request et envoyer vos demandes.
+                Connectez-vous à votre espace administrateur
+                pour gérer les demandes de l'établissement.
             </p>
 
-
-            <!-- =========================
-                 ERREUR
-                 ========================= -->
 
             {% if error %}
 
@@ -89,20 +85,16 @@
                 <div class="form-group">
 
                     <label for="email">
-                        Email scolaire
+                        Email administrateur
                     </label>
 
                     <input
                         type="email"
                         id="email"
                         name="email"
-                        placeholder="prenom.nom@myskolae.fr"
+                        placeholder="admin@myskolae.fr"
                         required
                     >
-
-                    <small>
-                        Utilisez votre adresse email scolaire.
-                    </small>
 
                 </div>
 
@@ -117,14 +109,10 @@
                         type="password"
                         id="password"
                         name="password"
-                        placeholder="Choisissez un mot de passe"
+                        placeholder="Votre mot de passe"
                         minlength="12"
                         required
                     >
-
-                    <small>
-                        Minimum 12 caractères.
-                    </small>
 
                 </div>
 
@@ -132,29 +120,27 @@
                 <button
                     type="submit"
                     class="btn btn-primary"
-                    id="registerButton"
+                    id="adminLoginButton"
                 >
-                    <span>Créer mon compte</span>
+                    <span>Se connecter</span>
                     <span class="arrow">→</span>
                 </button>
+                
+
 
             </form>
 
 
-            <!-- =========================
-                 RETOUR
-                 ========================= -->
-
             <a
-                href="{{ url_for('auth_home') }}"
+                href="{{ url_for('choix_auth') }}"
                 class="back-link"
             >
-                ← Retour à la connexion
+                ← Retour au choix du compte
             </a>
 
 
             <p class="bottom-text">
-                Un code de vérification sera envoyé par email
+                Campus Request · Espace administrateur
             </p>
 
         </section>
@@ -238,11 +224,11 @@
         setInterval(blink, 5000);
 
 
-        const registerButton =
-            document.getElementById("registerButton");
+        const adminLoginButton =
+            document.getElementById("adminLoginButton");
 
 
-        registerButton.addEventListener(
+        adminLoginButton.addEventListener(
             "click",
             function () {
 

@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Campus Request | Créer un compte</title>
+    <title>Campus Request | Créer un compte administrateur</title>
 
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
@@ -45,7 +45,7 @@
 
 
         <!-- =========================
-             INSCRIPTION
+             INSCRIPTION ADMIN
              ========================= -->
 
         <section class="welcome-section">
@@ -58,12 +58,12 @@
 
             <h1>
                 Créer un compte
-                <span>Élève</span>
+                <span>Administrateur</span>
             </h1>
 
             <p class="description">
-                Créez votre compte étudiant pour accéder
-                à Campus Request et envoyer vos demandes.
+                Créez votre compte administrateur pour accéder
+                à l'espace de gestion de Campus Request.
             </p>
 
 
@@ -89,19 +89,19 @@
                 <div class="form-group">
 
                     <label for="email">
-                        Email scolaire
+                        Email administrateur
                     </label>
 
                     <input
                         type="email"
                         id="email"
                         name="email"
-                        placeholder="prenom.nom@myskolae.fr"
+                        placeholder="admin@myskolae.fr"
                         required
                     >
 
                     <small>
-                        Utilisez votre adresse email scolaire.
+                        Utilisez votre adresse email administrateur.
                     </small>
 
                 </div>
@@ -132,7 +132,7 @@
                 <button
                     type="submit"
                     class="btn btn-primary"
-                    id="registerButton"
+                    id="adminRegisterButton"
                 >
                     <span>Créer mon compte</span>
                     <span class="arrow">→</span>
@@ -146,15 +146,15 @@
                  ========================= -->
 
             <a
-                href="{{ url_for('auth_home') }}"
+                href="{{ url_for('choix_register') }}"
                 class="back-link"
             >
-                ← Retour à la connexion
+                ← Retour au choix du compte
             </a>
 
 
             <p class="bottom-text">
-                Un code de vérification sera envoyé par email
+                Création d'un compte administrateur
             </p>
 
         </section>
@@ -238,11 +238,11 @@
         setInterval(blink, 5000);
 
 
-        const registerButton =
-            document.getElementById("registerButton");
+        const adminRegisterButton =
+            document.getElementById("adminRegisterButton");
 
 
-        registerButton.addEventListener(
+        adminRegisterButton.addEventListener(
             "click",
             function () {
 

@@ -31,6 +31,20 @@ def home():
 def auth_home():
     return render_template("connexion.html")
 
+@app.route("/choix-register")
+def choix_register():
+    return render_template("choix-register.html")
+
+@app.route("/choix-auth")
+def choix_auth():
+    return render_template("choix-auth.html")
+
+@app.route("/admin/register", methods=["GET", "POST"])
+def admin_register():
+    if request.method == "GET":
+        return render_template("admin-register.html")
+
+    return "Inscription administrateur - bientôt disponible"
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -164,6 +178,32 @@ def login():
         ), 403
 
     session["student_id"] = student.id
+
+    return redirect(url_for("home"))
+
+@app.route("/admin/login", methods=["GET", "POST"])
+def admin_login():
+    if request.method == "GET":
+        return render_template("admin-login.html")
+
+    email = request.form.get("email", "").strip().lower()
+    password = request.form.get("password", "")
+
+    admin = Admin.query.filter_by(email=email).first()
+
+    if admin is None:
+        return render_template(
+            "admin-login.html",
+            error="Email ou mot de passe incorrect."
+        ), 401
+
+    if not check_password_hash(admin.password_hash, password):
+        return render_template(
+            "admin-login.html",
+            error="Email ou mot de passe incorrect."
+        ), 401
+
+    session["admin_id"] = admin.id
 
     return redirect(url_for("home"))
 

@@ -45,7 +45,7 @@
 
 
         <!-- =========================
-             INSCRIPTION
+             CHOIX DU COMPTE
              ========================= -->
 
         <section class="welcome-section">
@@ -57,104 +57,52 @@
             <div class="decoration"></div>
 
             <h1>
-                Créer un compte
-                <span>Élève</span>
+                Créer votre
+                <span>compte</span>
             </h1>
 
             <p class="description">
-                Créez votre compte étudiant pour accéder
-                à Campus Request et envoyer vos demandes.
+                Pour commencer, indiquez le type de compte
+                que vous souhaitez créer.
             </p>
 
 
-            <!-- =========================
-                 ERREUR
-                 ========================= -->
+            <div class="buttons">
 
-            {% if error %}
+                <!-- COMPTE ÉLÈVE -->
 
-                <div class="error-message">
-                    {{ error }}
-                </div>
-
-            {% endif %}
-
-
-            <!-- =========================
-                 FORMULAIRE
-                 ========================= -->
-
-            <form method="post" class="auth-form">
-
-                <div class="form-group">
-
-                    <label for="email">
-                        Email scolaire
-                    </label>
-
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        placeholder="prenom.nom@myskolae.fr"
-                        required
-                    >
-
-                    <small>
-                        Utilisez votre adresse email scolaire.
-                    </small>
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label for="password">
-                        Mot de passe
-                    </label>
-
-                    <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        placeholder="Choisissez un mot de passe"
-                        minlength="12"
-                        required
-                    >
-
-                    <small>
-                        Minimum 12 caractères.
-                    </small>
-
-                </div>
-
-
-                <button
-                    type="submit"
+                <a
+                    href="{{ url_for('register') }}"
                     class="btn btn-primary"
-                    id="registerButton"
                 >
-                    <span>Créer mon compte</span>
+                    <span>Je suis élève</span>
                     <span class="arrow">→</span>
-                </button>
-
-            </form>
+                </a>
 
 
-            <!-- =========================
-                 RETOUR
-                 ========================= -->
+                <!-- COMPTE ADMIN -->
+
+                <a
+                    href="{{ url_for('admin_register') }}"
+                    class="btn btn-secondary"
+                >
+                    <span>Je suis administrateur</span>
+                    <span class="arrow">→</span>
+                </a>
+
+            </div>
+
 
             <a
                 href="{{ url_for('auth_home') }}"
                 class="back-link"
             >
-                ← Retour à la connexion
+                ← Retour
             </a>
 
 
             <p class="bottom-text">
-                Un code de vérification sera envoyé par email
+                Campus Request · Skolae
             </p>
 
         </section>
@@ -236,22 +184,6 @@
 
 
         setInterval(blink, 5000);
-
-
-        const registerButton =
-            document.getElementById("registerButton");
-
-
-        registerButton.addEventListener(
-            "click",
-            function () {
-
-                eyes.forEach(function (eye) {
-                    eye.classList.add("closed");
-                });
-
-            }
-        );
 
     </script>
 
