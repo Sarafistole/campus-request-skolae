@@ -264,12 +264,25 @@ def create_ticket():
     if len(selected_tags) != len(tag_ids):
         return "Un ou plusieurs sujets/services sont invalides.", 400
 
+    # ROUTING-02 :
+    # détermine les services cibles recommandés à partir
+    # des correspondances définies sur les tags par ROUTING-01.
+    # Un tag sans correspondance ne bloque pas la création.
+    recommended_services = list(
+        dict.fromkeys(
+            tag.target_service
+            for tag in selected_tags
+            if tag.target_service
+        )
+    )
+
     ticket = Ticket(
         student_id=student_id,
         request_type_id=request_type.id,
         title=title,
         description=description,
         scope=scope,
+        recommended_services=recommended_services,
         classe_personnes_concernees=precision or None,
         tags=selected_tags
     )
