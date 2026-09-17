@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Détail du ticket - Campus Request</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/admin-ticket-detail.css') }}"
+    >
+</head>
+
+<body>
+
+    <div class="admin-detail-layout">
+
+        <!-- Navigation -->
+        <aside class="admin-sidebar">
+
+            <div class="admin-brand">
+                <h1>Campus Request</h1>
+                <span>Espace administration</span>
+            </div>
+
+            <nav class="admin-nav">
+                <a href="#" class="admin-nav-link active">
+                    File de modération
+                </a>
+
+                <a href="#" class="admin-nav-link">
+                    Tickets traités
+                </a>
+            </nav>
+
+            <div class="admin-sidebar-footer">
+                <span>Administrateur</span>
+                <a href="#" class="admin-logout">
+                    Déconnexion
+                </a>
+            </div>
+
+        </aside>
+
+
+        <!-- Contenu -->
+        <main class="ticket-detail-main">
+
+            <!-- Retour + référence -->
+            <header class="ticket-detail-header">
+
+                <a href="{{ url_for('admin_dashboard') }}" class="back-link">
+                    ← Retour à la file
+                </a>
+
+                <div class="ticket-heading">
+
+                    <div>
+                        <p class="ticket-reference">
+                            CR-2026-0043
+                        </p>
+
+                        <h2>
+                            Situation préoccupante sur le campus
+                        </h2>
+
+                        <p class="ticket-date">
+                            Reçu le 17/09/2026 à 17:16
+                        </p>
+                    </div>
+
+                    <div class="ticket-badges">
+                        <span class="badge badge-new">
+                            Nouveau
+                        </span>
+
+                        <span class="badge badge-vigilance">
+                            Vigilance
+                        </span>
+                    </div>
+
+                </div>
+
+            </header>
+
+
+            <div class="ticket-detail-grid">
+
+                <!-- Colonne principale -->
+                <section class="ticket-content">
+
+                    <article class="detail-card">
+
+                        <div class="detail-card-header">
+                            <h3>Demande étudiante</h3>
+
+                            <span class="anonymous-notice">
+                                Identité étudiante masquée
+                            </span>
+                        </div>
+
+                        <div class="ticket-metadata">
+
+                            <div class="metadata-item">
+                                <span class="metadata-label">
+                                    Nature
+                                </span>
+                                <strong>Signaler</strong>
+                            </div>
+
+                            <div class="metadata-item">
+                                <span class="metadata-label">
+                                    Personnes concernées
+                                </span>
+                                <strong>Groupe</strong>
+                            </div>
+
+                            <div class="metadata-item">
+                                <span class="metadata-label">
+                                    Sujet
+                                </span>
+                                <strong>Harcèlement</strong>
+                            </div>
+
+                        </div>
+
+                        <div class="ticket-message">
+
+                            <h4>Description</h4>
+
+                            <p>
+                                Je souhaite signaler une situation
+                                récurrente sur le campus qui nécessite
+                                une attention particulière.
+                            </p>
+
+                            <p>
+                                Plusieurs comportements problématiques
+                                ont été constatés et la situation semble
+                                se répéter depuis plusieurs jours.
+                            </p>
+
+                        </div>
+
+                    </article>
+
+
+                    <!-- Zone modération -->
+                    <article class="detail-card moderation-card">
+
+                        <div class="detail-card-header">
+                            <h3>Analyse de modération</h3>
+                        </div>
+
+                        <div class="moderation-signals">
+
+                            <div class="moderation-signal">
+                                <span class="signal-label">
+                                    Niveau de vigilance
+                                </span>
+
+                                <strong class="signal-vigilance">
+                                    Vigilance requise
+                                </strong>
+                            </div>
+
+                            <div class="moderation-signal">
+                                <span class="signal-label">
+                                    Priorité
+                                </span>
+
+                                <strong>
+                                    Haute
+                                </strong>
+                            </div>
+
+                            <div class="moderation-signal">
+                                <span class="signal-label">
+                                    Similarité détectée
+                                </span>
+
+                                <strong>
+                                    Aucun regroupement
+                                </strong>
+                            </div>
+
+                        </div>
+
+                        <p class="moderation-placeholder">
+                            Les indicateurs de modération seront
+                            alimentés automatiquement par le moteur
+                            de modération.
+                        </p>
+
+                    </article>
+
+                </section>
+
+
+                <!-- Colonne actions -->
+                <aside class="ticket-actions">
+
+                    <!-- Routage -->
+                    <article class="action-card">
+
+                        <h3>Routage</h3>
+
+                        <div class="routing-current">
+                            <span>Service recommandé</span>
+                            <strong>Vie étudiante</strong>
+                        </div>
+
+                        <label for="service-select">
+                            Modifier la destination
+                        </label>
+
+                        <select id="service-select">
+                            <option>Vie étudiante</option>
+                            <option>Scolarité</option>
+                            <option>Infrastructure</option>
+                        </select>
+
+                        <button
+                            type="button"
+                            class="button button-secondary"
+                        >
+                            Modifier le service
+                        </button>
+
+                    </article>
+
+
+                    <!-- Statut -->
+                    <article class="action-card">
+
+                        <h3>Traitement</h3>
+
+                        <div class="status-current">
+                            <span>Statut actuel</span>
+                            <strong>Nouveau</strong>
+                        </div>
+
+                        <button
+                            type="button"
+                            class="button button-primary"
+                        >
+                            Prendre en charge
+                        </button>
+
+                        <button
+                            type="button"
+                            class="button button-success"
+                        >
+                            Marquer comme traité
+                        </button>
+
+                    </article>
+
+
+                    <!-- Informations système -->
+                    <article class="action-card system-card">
+
+                        <h3>Informations</h3>
+
+                        <dl class="system-information">
+
+                            <div>
+                                <dt>Référence</dt>
+                                <dd>CR-2026-0043</dd>
+                            </div>
+
+                            <div>
+                                <dt>Création</dt>
+                                <dd>17/09/2026 17:16</dd>
+                            </div>
+
+                            <div>
+                                <dt>Dernière modification</dt>
+                                <dd>17/09/2026 17:16</dd>
+                            </div>
+
+                        </dl>
+
+                    </article>
+
+                </aside>
+
+            </div>
+
+        </main>
+
+    </div>
+
+</body>
+</html>

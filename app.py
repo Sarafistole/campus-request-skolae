@@ -417,6 +417,37 @@ def login():
 
     return redirect(url_for("dashboard"))
 
+@app.route("/admin/dashboard")
+def admin_dashboard():
+    admin_id = session.get("admin_id")
+
+    if admin_id is None:
+        return redirect(url_for("admin_login"))
+
+    admin = db.session.get(Admin, admin_id)
+
+    if admin is None:
+        session.pop("admin_id", None)
+        return redirect(url_for("admin_login"))
+
+    return render_template("admin-dashboard.html")
+
+
+@app.route("/admin/tickets/demo")
+def admin_ticket_demo():
+    admin_id = session.get("admin_id")
+
+    if admin_id is None:
+        return redirect(url_for("admin_login"))
+
+    admin = db.session.get(Admin, admin_id)
+
+    if admin is None:
+        session.pop("admin_id", None)
+        return redirect(url_for("admin_login"))
+
+    return render_template("admin-ticket-detail.html")
+
 @app.route("/admin/login", methods=["GET", "POST"])
 def admin_login():
     if request.method == "GET":
@@ -441,7 +472,7 @@ def admin_login():
 
     session["admin_id"] = admin.id
 
-    return redirect(url_for("home"))
+    return redirect(url_for("admin_dashboard"))
 
 
 @app.route("/logout")

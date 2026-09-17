@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Administration - Campus Request</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/admin-dashboard.css') }}"
+    >
+</head>
+
+<body>
+
+    <div class="admin-layout">
+
+        <!-- Navigation latérale -->
+        <aside class="admin-sidebar">
+
+            <div class="admin-brand">
+                <h1>Campus Request</h1>
+                <span>Espace administration</span>
+            </div>
+
+            <nav class="admin-nav">
+                <a href="#" class="admin-nav-link active">
+                    File de modération
+                </a>
+
+                <a href="#" class="admin-nav-link">
+                    Tickets traités
+                </a>
+            </nav>
+
+            <div class="admin-sidebar-footer">
+                <span>Administrateur</span>
+                <a href="#" class="admin-logout">
+                    Déconnexion
+                </a>
+            </div>
+
+        </aside>
+
+
+        <!-- Contenu principal -->
+        <main class="admin-main">
+
+            <header class="admin-header">
+
+                <div>
+                    <p class="admin-eyebrow">Administration</p>
+                    <h2>File de modération</h2>
+                    <p class="admin-header-description">
+                        Consultez et traitez les demandes transmises
+                        par les étudiants.
+                    </p>
+                </div>
+
+            </header>
+
+
+            <!-- Indicateurs -->
+            <section class="admin-stats">
+
+                <article class="stat-card">
+                    <span class="stat-label">À traiter</span>
+                    <strong class="stat-value">12</strong>
+                </article>
+
+                <article class="stat-card">
+                    <span class="stat-label">En cours</span>
+                    <strong class="stat-value">5</strong>
+                </article>
+
+                <article class="stat-card">
+                    <span class="stat-label">Vigilance</span>
+                    <strong class="stat-value">2</strong>
+                </article>
+
+                <article class="stat-card">
+                    <span class="stat-label">Traités aujourd'hui</span>
+                    <strong class="stat-value">8</strong>
+                </article>
+
+            </section>
+
+
+            <!-- Filtres -->
+            <section class="admin-filters">
+
+                <div class="filter-group">
+
+                    <label for="status-filter">
+                        Statut
+                    </label>
+
+                    <select id="status-filter">
+                        <option>Tous les statuts</option>
+                        <option>Nouveau</option>
+                        <option>En cours</option>
+                        <option>Traité</option>
+                    </select>
+
+                </div>
+
+                <div class="filter-group">
+
+                    <label for="service-filter">
+                        Service
+                    </label>
+
+                    <select id="service-filter">
+                        <option>Tous les services</option>
+                        <option>Scolarité</option>
+                        <option>Vie étudiante</option>
+                        <option>Infrastructure</option>
+                    </select>
+
+                </div>
+
+                <div class="filter-group filter-search">
+
+                    <label for="ticket-search">
+                        Recherche
+                    </label>
+
+                    <input
+                        id="ticket-search"
+                        type="search"
+                        placeholder="Rechercher un ticket..."
+                    >
+
+                </div>
+
+            </section>
+
+
+            <!-- File de tickets -->
+            <section class="ticket-queue">
+
+                <div class="ticket-queue-header">
+                    <h3>Demandes récentes</h3>
+                    <span>3 tickets affichés</span>
+                </div>
+
+
+                <!-- Ticket mock 1 -->
+                <article class="admin-ticket-card">
+
+                    <div class="ticket-card-header">
+
+                        <div>
+                            <span class="ticket-reference">
+                                CR-2026-0042
+                            </span>
+
+                            <span class="ticket-date">
+                                17/09/2026 · 18:42
+                            </span>
+                        </div>
+
+                        <div class="ticket-badges">
+                            <span class="badge badge-new">
+                                Nouveau
+                            </span>
+
+                            <span class="badge badge-normal">
+                                Priorité normale
+                            </span>
+                        </div>
+
+                    </div>
+
+                    <div class="ticket-card-body">
+
+                        <div class="ticket-main-info">
+                            <p class="ticket-type">
+                                Question / Renseignement
+                            </p>
+
+                            <h4>
+                                Erreur dans mon emploi du temps
+                            </h4>
+
+                            <p class="ticket-preview">
+                                Mon planning affiche deux cours au même
+                                horaire vendredi après-midi...
+                            </p>
+                        </div>
+
+                        <div class="ticket-routing">
+                            <span class="ticket-routing-label">
+                                Service recommandé
+                            </span>
+
+                            <strong>Scolarité</strong>
+
+                            <span class="ticket-topic">
+                                Planning
+                            </span>
+                        </div>
+
+                    </div>
+
+                    <div class="ticket-card-footer">
+                        <span class="anonymous-notice">
+                            Identité étudiante masquée
+                        </span>
+
+                        <a
+                            href="{{ url_for('admin_ticket_demo') }}"
+                            class="ticket-open-button"
+                        >
+                            Consulter
+                        </a>
+                    </div>
+
+                </article>
+
+
+                <!-- Ticket mock 2 -->
+                <article class="admin-ticket-card ticket-vigilance">
+
+                    <div class="ticket-card-header">
+
+                        <div>
+                            <span class="ticket-reference">
+                                CR-2026-0043
+                            </span>
+
+                            <span class="ticket-date">
+                                17/09/2026 · 17:16
+                            </span>
+                        </div>
+
+                        <div class="ticket-badges">
+                            <span class="badge badge-new">
+                                Nouveau
+                            </span>
+
+                            <span class="badge badge-vigilance">
+                                Vigilance
+                            </span>
+                        </div>
+
+                    </div>
+
+                    <div class="ticket-card-body">
+
+                        <div class="ticket-main-info">
+                            <p class="ticket-type">
+                                Signaler
+                            </p>
+
+                            <h4>
+                                Situation préoccupante sur le campus
+                            </h4>
+
+                            <p class="ticket-preview">
+                                Je souhaite signaler une situation
+                                récurrente qui nécessite une attention...
+                            </p>
+                        </div>
+
+                        <div class="ticket-routing">
+                            <span class="ticket-routing-label">
+                                Service recommandé
+                            </span>
+
+                            <strong>Vie étudiante</strong>
+
+                            <span class="ticket-topic">
+                                Harcèlement
+                            </span>
+                        </div>
+
+                    </div>
+
+                    <div class="ticket-card-footer">
+                        <span class="anonymous-notice">
+                            Identité étudiante masquée
+                        </span>
+
+                        <a
+                            href="{{ url_for('admin_ticket_demo') }}"
+                            class="ticket-open-button"
+                        >
+                            Consulter
+                        </a>
+                    </div>
+
+                </article>
+
+
+                <!-- Ticket mock 3 -->
+                <article class="admin-ticket-card">
+
+                    <div class="ticket-card-header">
+
+                        <div>
+                            <span class="ticket-reference">
+                                CR-2026-0044
+                            </span>
+
+                            <span class="ticket-date">
+                                16/09/2026 · 15:08
+                            </span>
+                        </div>
+
+                        <div class="ticket-badges">
+                            <span class="badge badge-progress">
+                                En cours
+                            </span>
+
+                            <span class="badge badge-normal">
+                                Priorité normale
+                            </span>
+                        </div>
+
+                    </div>
+
+                    <div class="ticket-card-body">
+
+                        <div class="ticket-main-info">
+                            <p class="ticket-type">
+                                Signaler
+                            </p>
+
+                            <h4>
+                                Problème d'accès à une salle
+                            </h4>
+
+                            <p class="ticket-preview">
+                                La salle indiquée sur mon planning était
+                                inaccessible au début du cours...
+                            </p>
+                        </div>
+
+                        <div class="ticket-routing">
+                            <span class="ticket-routing-label">
+                                Service recommandé
+                            </span>
+
+                            <strong>Infrastructure</strong>
+
+                            <span class="ticket-topic">
+                                Accessibilité
+                            </span>
+                        </div>
+
+                    </div>
+
+                    <div class="ticket-card-footer">
+                        <span class="anonymous-notice">
+                            Identité étudiante masquée
+                        </span>
+
+                        <a
+                            href="{{ url_for('admin_ticket_demo') }}"
+                            class="ticket-open-button"
+                        >
+                            Consulter
+                        </a>
+                    </div>
+
+                </article>
+
+            </section>
+
+        </main>
+
+    </div>
+
+</body>
+</html>
