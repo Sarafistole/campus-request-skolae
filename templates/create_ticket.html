@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Créer un ticket</title>
+</head>
+<body>
+
+    <h1>Créer une demande</h1>
+
+    <form method="POST">
+
+        <label for="title">Titre</label>
+        <input
+            id="title"
+            name="title"
+            type="text"
+            maxlength="255"
+            required
+        >
+
+        <br><br>
+
+        <label for="request_type_id">Type de demande</label>
+        <select
+            id="request_type_id"
+            name="request_type_id"
+            required
+        >
+            <option value="">Choisir</option>
+
+            {% for request_type in request_types %}
+                <option value="{{ request_type.id }}">
+                    {{ request_type.name }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <br><br>
+
+        <label for="description">Description</label>
+        <textarea
+            id="description"
+            name="description"
+            required
+        ></textarea>
+
+        <br><br>
+
+        <label for="scope">Qui est concerné ?</label>
+        <select id="scope" name="scope" required>
+            <option value="">Choisir</option>
+            <option value="SELF">Moi</option>
+            <option value="INDIVIDUAL">Une autre personne</option>
+            <option value="GROUP">Un groupe</option>
+        </select>
+
+        <br><br>
+
+        <label for="classe_personnes_concernees">
+            Précision (facultatif)
+        </label>
+        <input
+            id="classe_personnes_concernees"
+            name="classe_personnes_concernees"
+            type="text"
+            maxlength="255"
+        >
+
+        <br><br>
+
+        <fieldset>
+            <legend>
+                Sujet(s) / service(s) concerné(s)
+                — 1 minimum, 5 maximum
+            </legend>
+
+            {% for tag in tags %}
+                <label>
+                    <input
+                        type="checkbox"
+                        name="tag_ids"
+                        value="{{ tag.id }}"
+                    >
+                    {{ tag.name }}
+                </label>
+                <br>
+            {% endfor %}
+        </fieldset>
+
+        <br>
+
+        <button type="submit">
+            Envoyer la demande
+        </button>
+
+    </form>
+
+</body>
+</html>
