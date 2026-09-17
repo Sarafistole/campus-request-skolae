@@ -1,3 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+:root {
+    --primary: #4F8CFF;
+    --accent: #8B5CF6;
+
+    --bg-main: #0B1020;
+    --bg-secondary: #111827;
+    --card: #172033;
+
+    --text-primary: #F8FAFC;
+    --text-secondary: #94A3B8;
+
+    --success: #22C55E;
+    --warning: #F59E0B;
+    --error: #EF4444;
+}
+
+
+body {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    color: var(--text-primary);
+}
 /* =========================
    BASE
 ========================= */
@@ -13,13 +37,13 @@ html {
 body {
     margin: 0;
 
-    font-family: Arial, sans-serif;
+    font-family: inherit;
 
     font-size: 16px;
 
     line-height: 1.5;
 
-    background-color: #111111;
+    background-color: var(--bg-main);
 
     color: white;
 
@@ -52,9 +76,9 @@ body {
 
     z-index: 1000;
 
-    background-color: #111111;
+    background-color: var(--bg-main);
 
-    border-bottom: 1px solid rgba(255, 232, 74, 0.15);
+    border-bottom: 1px solid rgba(79, 140, 255, 0.15);
 
     box-shadow:
         0 4px 20px rgba(0, 0, 0, 0.25);
@@ -67,7 +91,7 @@ body {
 
     font-size: 24px;
 
-    font-weight: bold;
+    font-weight: 700;
 
     letter-spacing: 0.5px;
 }
@@ -89,7 +113,7 @@ body {
 }
 
 .menu-button:hover {
-    color: #FFE84A;
+    color: var(--primary);
 
     transform: rotate(90deg);
 }
@@ -118,9 +142,9 @@ body {
 
     min-width: 230px;
 
-    background-color: #111111;
+    background-color: var(--bg-main);
 
-    border: 1px solid #FFE84A;
+    border: 1px solid var(--primary);
 
     border-radius: 10px;
 
@@ -130,7 +154,7 @@ body {
     animation: menuAppear 0.2s ease-out;
 }
 
-.menu button {
+.menu a {
     padding: 12px 15px;
 
     border: none;
@@ -154,9 +178,9 @@ body {
 }
 
 .menu button:hover {
-    background-color: #FFE84A;
+    background-color: var(--primary);
 
-    color: #111111;
+    color: var(--bg-main);
 
     padding-left: 20px;
 }
@@ -181,21 +205,23 @@ body {
 
     text-align: center;
 
-    background-color: #111111;
+    background-color: var(--bg-main);
 
     animation: introAppear 0.8s ease-out;
 }
 
 .intro h2 {
     max-width: 850px;
-
     margin: 0 0 25px;
 
     font-size: clamp(30px, 5vw, 48px);
-
     line-height: 1.15;
+    font-weight: 700;
 
-    color: #FFE84A;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 .intro p {
@@ -203,7 +229,7 @@ body {
 
     margin: 8px 0;
 
-    color: #dddddd;
+    color: var(--text-secondary);
 
     font-size: 17px;
 }
@@ -213,7 +239,7 @@ body {
 
     color: white;
 
-    font-weight: bold;
+    font-weight: 700;
 }
 
 
@@ -232,7 +258,7 @@ body {
 
     gap: 5px;
 
-    color: #FFE84A;
+    color: var(--primary);
 
     font-size: 14px;
 
@@ -265,7 +291,7 @@ body {
 
     font-size: 36px;
 
-    color: #FFE84A;
+    color: var(--primary);
 }
 
 .request h3 {
@@ -324,7 +350,7 @@ body {
 
     color: white;
 
-    font-weight: bold;
+    font-weight: 600;
 }
 
 
@@ -339,9 +365,9 @@ body {
 
     color: white;
 
-    background-color: #1c1c1c;
+    background-color: var(--bg-secondary);
 
-    border: 1px solid #555;
+    border: 1px solid var(--text-secondary);
 
     border-radius: 8px;
 
@@ -357,10 +383,10 @@ body {
 .request-title input:focus {
     outline: none;
 
-    border-color: #FFE84A;
+    border-color: var(--primary);
 
     box-shadow:
-        0 0 0 3px rgba(255, 232, 74, 0.1);
+        0 0 0 3px rgba(79, 140, 255, 0.1);
 }
 
 
@@ -375,9 +401,9 @@ body {
 
     color: white;
 
-    background-color: #1c1c1c;
+    background-color: var(--bg-secondary);
 
-    border: 1px solid #555;
+    border: 1px solid var(--text-secondary);
 
     border-radius: 8px;
 
@@ -395,10 +421,10 @@ body {
 .request-type select:focus {
     outline: none;
 
-    border-color: #FFE84A;
+    border-color: var(--primary);
 
     box-shadow:
-        0 0 0 3px rgba(255, 232, 74, 0.1);
+        0 0 0 3px rgba(79, 140, 255, 0.1);
 }
 
 
@@ -415,9 +441,9 @@ body {
 
     color: white;
 
-    background-color: #1c1c1c;
+    background-color: var(--bg-secondary);
 
-    border: 1px solid #555;
+    border: 1px solid var(--text-secondary);
 
     border-radius: 8px;
 
@@ -437,10 +463,10 @@ body {
 .request-description textarea:focus {
     outline: none;
 
-    border-color: #FFE84A;
+    border-color: var(--primary);
 
     box-shadow:
-        0 0 0 3px rgba(255, 232, 74, 0.1);
+        0 0 0 3px rgba(79, 140, 255, 0.1);
 }
 
 
@@ -451,9 +477,9 @@ body {
 .request-scope {
     padding: 25px;
 
-    background-color: #181818;
+    background-color: var(--card);
 
-    border: 1px solid #2b2b2b;
+    border: 1px solid var(--text-secondary);
 
     border-radius: 12px;
 }
@@ -469,15 +495,15 @@ body {
 
     padding: 12px 15px;
 
-    background-color: #1c1c1c;
+    background-color: var(--bg-secondary);
 
-    border: 1px solid #333;
+    border: 1px solid var(--text-secondary);
 
     border-radius: 8px;
 
     cursor: pointer;
 
-    font-weight: normal;
+    font-weight: 400;
 
     transition:
         border-color 0.2s ease,
@@ -490,9 +516,9 @@ body {
 }
 
 .request-scope label:hover {
-    border-color: #FFE84A;
+    border-color: var(--primary);
 
-    background-color: #222222;
+    background-color: var(--text-secondary);
 
     transform: translateX(4px);
 }
@@ -502,7 +528,7 @@ body {
 
     height: 18px;
 
-    accent-color: #4F7CFF;
+    accent-color: var(--primary);
 
     cursor: pointer;
 }
@@ -519,9 +545,9 @@ body {
 
     color: white;
 
-    background-color: #1c1c1c;
+    background-color: var(--bg-secondary);
 
-    border: 1px solid #555;
+    border: 1px solid var(--text-secondary);
 
     border-radius: 8px;
 
@@ -537,10 +563,10 @@ body {
 .concerned-person input:focus {
     outline: none;
 
-    border-color: #FFE84A;
+    border-color: var(--primary);
 
     box-shadow:
-        0 0 0 3px rgba(255, 232, 74, 0.1);
+        0 0 0 3px rgba(79, 140, 255, 0.1);
 }
 
 
@@ -551,9 +577,9 @@ body {
 .request-tags-section {
     padding: 25px;
 
-    background-color: #181818;
+    background-color: var(--card);
 
-    border: 1px solid #2b2b2b;
+    border: 1px solid var(--text-secondary);
 
     border-radius: 12px;
 }
@@ -563,7 +589,7 @@ body {
 
     margin-bottom: 20px;
 
-    color: #999;
+    color: var(--text-secondary);
 
     font-size: 14px;
 }
@@ -599,15 +625,15 @@ body {
 
     color: white;
 
-    background-color: #1c1c1c;
+    background-color: var(--bg-secondary);
 
-    border: 2px solid #FFE84A;
+    border: 2px solid var(--primary);
 
     border-radius: 10px;
 
     cursor: pointer;
 
-    font-weight: normal;
+    font-weight: 400;
 
     transition:
         background-color 0.2s ease,
@@ -618,20 +644,20 @@ body {
 }
 
 .tag-checkbox span:hover {
-    background-color: #FFE84A;
+    background-color: var(--primary);
 
-    color: #111111;
+    color: var(--bg-main);
 
     transform: translateY(-3px);
 
     box-shadow:
-        0 6px 15px rgba(255, 232, 74, 0.2);
+        0 6px 15px rgba(79, 140, 255, 0.2);
 }
 
 .tag-checkbox input:checked + span {
-    background-color: #4F7CFF;
+    background-color: var(--primary);
 
-    border-color: #4F7CFF;
+    border-color: var(--primary);
 
     color: white;
 
@@ -659,15 +685,15 @@ body {
 
     border-radius: 9px;
 
-    background-color: #FFE84A;
+    background-color: var(--primary);
 
-    color: #111111;
+    color: var(--bg-main);
 
     cursor: pointer;
 
     font-size: 17px;
 
-    font-weight: bold;
+    font-weight: 600;
 
     transition:
         transform 0.2s ease,
@@ -676,7 +702,7 @@ body {
 }
 
 .submit-button:hover {
-    background-color: #4F7CFF;
+    background-color: var(--primary);
 
     color: white;
 

@@ -121,6 +121,68 @@ def dashboard():
         tags=tags
     )
 
+@app.route("/account", methods=["GET", "POST"])
+def account():
+    student_id = session.get("student_id")
+
+    if not student_id:
+        return redirect(url_for("login"))
+
+    student = Student.query.get(student_id)
+
+    if student is None:
+        session.pop("student_id", None)
+        return redirect(url_for("login"))
+
+    if request.method == "POST":
+        new_password = request.form.get("new_password", "")
+        confirm_password = request.form.get("confirm_password", "")
+
+        if not new_password or not confirm_password:
+            return render_template(
+                "account.html",
+                student=student,
+                error="Veuillez remplir les deux champs."
+            ), 400
+
+        if new_password != confirm_password:
+            return render_template(
+                "account.html",
+                student=student,
+                error="Les deux mots de passe ne correspondent pas."
+            ), 400
+
+        # Le hash du nouveau mot de passe sera ajouté ici
+        # avec la méthode déjà utilisée pour les étudiants.
+
+        student.password_hash = generate_password_hash(new_password)
+
+        db.session.commit()
+
+        return redirect(url_for("account"))
+
+    return render_template("account.html", student=student)
+
+
+@app.route("/history")
+def history():
+    student_id = session.get("student_id")
+
+    if not student_id:
+        return redirect(url_for("login"))
+
+    tickets = (
+        Ticket.query
+        .filter_by(student_id=student_id)
+        .order_by(Ticket.created_at.desc())
+        .all()
+    )
+
+    return render_template(
+        "history.html",
+        tickets=tickets
+    )
+
 @app.route("/auth")
 def auth_home():
     return render_template("connexion.html")
