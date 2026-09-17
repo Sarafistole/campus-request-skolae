@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Campus Request</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard_student.css') }}">
+</head>
+
+<body>
+
+    <!-- =========================
+         PRÉSENTATION
+    ========================== -->
+
+    <section class="intro">
+
+        <div class="header">
+
+            <h1>Campus Request</h1>
+
+            <button
+                class="menu-button"
+                type="button"
+                aria-label="Ouvrir le menu">
+                ☰
+            </button>
+
+        </div>
+
+
+        <!-- Menu -->
+
+        <div class="menu">
+
+            <button type="button">
+                Mon compte
+            </button>
+
+            <button type="button">
+                Historique de mes demandes
+            </button>
+
+        </div>
+
+
+        <h2>
+            Une seule entrée pour toutes vos demandes.
+        </h2>
+
+        <p>
+            Campus Request facilite la connexion entre les étudiants
+            et les différents services du campus.
+        </p>
+
+        <p>
+            Que vous souhaitiez signaler un problème, effectuer une demande
+            ou proposer une idée, vous disposez d’un point d’entrée unique
+            pour transmettre votre demande.
+        </p>
+
+        <p>
+            Une demande. Un point d’entrée. Des services plus accessibles.
+        </p>
+
+
+        <div class="scroll-indicator">
+
+            <span>Faites défiler</span>
+
+            <span>↓</span>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =========================
+         FORMULAIRE
+    ========================== -->
+
+    <section class="request">
+
+        <h2>
+            Votre demande
+        </h2>
+        
+        {% if error %}
+            <div class="form-error">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        <form method="POST">
+
+
+            <!-- =========================
+                 TITRE
+            ========================== -->
+
+            <div class="request-title">
+
+                <label for="title">
+                    Titre *
+                </label>
+
+                <input
+                    id="title"
+                    name="title"
+                    type="text"
+                    maxlength="255"
+                    placeholder="Résumez votre demande"
+                    required
+                >
+
+            </div>
+
+
+
+            <!-- =========================
+                 TYPE DE DEMANDE
+            ========================== -->
+
+            <div class="request-type">
+
+                <h3>
+                    Type de demande *
+                </h3>
+
+                <select
+                    id="request_type_id"
+                    name="request_type_id"
+                    required
+                >
+
+                    <option value="">
+                        Choisir
+                    </option>
+
+                    {% for request_type in request_types %}
+
+                        <option value="{{ request_type.id }}">
+                            {{ request_type.name }}
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+
+            <!-- =========================
+                 DESCRIPTION
+            ========================== -->
+
+            <div class="request-description">
+
+                <label for="description">
+                    Décrivez votre demande *
+                </label>
+
+                <textarea
+                    id="description"
+                    name="description"
+                    placeholder="Expliquez-nous votre demande..."
+                    rows="6"
+                    required
+                ></textarea>
+
+            </div>
+
+
+
+            <!-- =========================
+                 PERSONNES CONCERNÉES
+            ========================== -->
+
+            <div class="request-scope">
+
+                <h3>
+                    Qui est concerné ? *
+                </h3>
+
+
+                <label>
+
+                    <input
+                        type="radio"
+                        name="scope"
+                        value="SELF"
+                        required
+                    >
+
+                    <span>
+                        Moi uniquement
+                    </span>
+
+                </label>
+
+
+                <label>
+
+                    <input
+                        type="radio"
+                        name="scope"
+                        value="INDIVIDUAL"
+                    >
+
+                    <span>
+                        Une autre personne
+                    </span>
+
+                </label>
+
+
+                <label>
+
+                    <input
+                        type="radio"
+                        name="scope"
+                        value="GROUP"
+                    >
+
+                    <span>
+                        Plusieurs personnes / un groupe
+                    </span>
+
+                </label>
+
+            </div>
+
+
+
+            <!-- =========================
+                 PRÉCISION
+            ========================== -->
+
+            <div class="concerned-person">
+
+                <label for="classe_personnes_concernees">
+                    Précisez si nécessaire
+                </label>
+
+                <input
+                    id="classe_personnes_concernees"
+                    name="classe_personnes_concernees"
+                    type="text"
+                    maxlength="255"
+                    placeholder="Classe, personne concernée, groupe..."
+                >
+
+            </div>
+
+
+
+            <!-- =========================
+                 TAGS
+            ========================== -->
+
+            <div class="request-tags-section">
+
+                <h3>
+                    Sujet(s) / service(s) concerné(s)
+                </h3>
+
+                <p class="tags-help">
+                    Sélectionnez entre 1 et 5 sujets.
+                </p>
+
+
+                <div class="request-tags">
+
+                    {% for tag in tags %}
+
+                        <label class="tag-checkbox">
+
+                            <input
+                                type="checkbox"
+                                name="tag_ids"
+                                value="{{ tag.id }}"
+                            >
+
+                            <span>
+                                {{ tag.name }}
+                            </span>
+
+                        </label>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =========================
+                 ENVOI
+            ========================== -->
+
+            <div class="request-submit">
+
+                <button
+                    type="submit"
+                    class="submit-button">
+
+                    Envoyer
+
+                </button>
+
+            </div>
+
+
+        </form>
+
+    </section>
+
+
+
+    <script src="{{ url_for('static', filename='js/dashboard_student.js') }}"></script>
+
+</body>
+
+</html>
