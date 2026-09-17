@@ -1,0 +1,708 @@
+/* =====================================================
+   CAMPUS REQUEST - SKOLAE
+   DARK MODERN DESIGN
+   ===================================================== */
+
+:root {
+
+    --background: #050816;
+
+    --panel: #0b1020;
+
+    --blue: #3b82f6;
+    --blue-light: #60a5fa;
+
+    --purple: #8b5cf6;
+    --purple-light: #a78bfa;
+
+    --pink: #ec4899;
+
+    --cyan: #22d3ee;
+
+    --white: #f8fafc;
+
+    --text: #dbe4f0;
+
+    --muted: #8995aa;
+}
+
+
+/* =====================================================
+   RESET
+   ===================================================== */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+
+/* =====================================================
+   PAGE
+   ===================================================== */
+
+body {
+
+    min-height: 100vh;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    background: var(--background);
+
+    color: var(--white);
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    overflow: hidden;
+}
+
+
+/* =====================================================
+   CONTAINER
+   ===================================================== */
+
+.container {
+
+    position: relative;
+
+    width: 92%;
+
+    max-width: 1100px;
+
+    min-height: 650px;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    overflow: hidden;
+
+    border-radius: 32px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #090e1d,
+            #0d1326
+        );
+
+    border:
+        1px solid rgba(255,255,255,0.08);
+
+    box-shadow:
+        0 35px 100px rgba(0,0,0,0.6);
+}
+
+
+/* =====================================================
+   LUMIÈRES
+   ===================================================== */
+
+.background-orb {
+
+    position: absolute;
+
+    border-radius: 50%;
+
+    filter: blur(90px);
+
+    opacity: 0.25;
+
+    pointer-events: none;
+
+    animation:
+        floating 8s ease-in-out infinite;
+}
+
+
+.orb-blue {
+
+    width: 320px;
+
+    height: 320px;
+
+    background: var(--blue);
+
+    top: -170px;
+
+    left: -100px;
+}
+
+
+.orb-purple {
+
+    width: 350px;
+
+    height: 350px;
+
+    background: var(--purple);
+
+    right: -150px;
+
+    bottom: -180px;
+
+    animation-delay: -4s;
+}
+
+
+@keyframes floating {
+
+    0% {
+        transform: translate(0,0);
+    }
+
+    50% {
+        transform: translate(25px,-20px);
+    }
+
+    100% {
+        transform: translate(0,0);
+    }
+}
+
+
+/* =====================================================
+   GRILLE
+   ===================================================== */
+
+.background-grid {
+
+    position: absolute;
+
+    inset: 0;
+
+    opacity: 0.05;
+
+    background-image:
+        linear-gradient(
+            rgba(255,255,255,0.15) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(255,255,255,0.15) 1px,
+            transparent 1px
+        );
+
+    background-size: 45px 45px;
+
+    pointer-events: none;
+}
+
+
+/* =====================================================
+   LOGO SKOLAE
+   ===================================================== */
+
+.skolae-logo {
+
+    position: absolute;
+
+    top: 70px;
+
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    z-index: 10;
+
+    text-align: center;
+}
+
+
+/* =====================================================
+   TEXTE DU LOGO
+   ===================================================== */
+
+.logo-text {
+
+    font-size: 38px;
+
+    font-weight: 900;
+
+    letter-spacing: 6px;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--blue-light),
+            var(--purple-light),
+            var(--pink)
+        );
+
+    -webkit-background-clip: text;
+
+    -webkit-text-fill-color: transparent;
+
+    filter:
+        drop-shadow(
+            0 0 18px
+            rgba(139,92,246,0.2)
+        );
+}
+
+
+/* =====================================================
+   YEUX
+   ===================================================== */
+
+.eyes {
+
+    display: flex;
+
+    justify-content: center;
+
+    gap: 14px;
+
+    margin-top: 8px;
+}
+
+
+.eye {
+
+    position: relative;
+
+    width: 24px;
+
+    height: 17px;
+
+    background: var(--white);
+
+    border-radius:
+        50%;
+
+    overflow: hidden;
+
+    transition:
+        height 0.12s ease,
+        transform 0.12s ease;
+}
+
+
+/* =====================================================
+   PUPILLES
+   ===================================================== */
+
+.pupil {
+
+    position: absolute;
+
+    width: 9px;
+
+    height: 9px;
+
+    border-radius: 50%;
+
+    background:
+        linear-gradient(
+            135deg,
+            #172554,
+            #020617
+        );
+
+    top: 50%;
+
+    left: 50%;
+
+    transform:
+        translate(-50%, -50%);
+
+    transition:
+        transform 0.08s ease;
+}
+
+
+/* =====================================================
+   YEUX FERMÉS
+   ===================================================== */
+
+.eye.closed {
+
+    height: 3px;
+
+    margin-top: 7px;
+
+    border-radius: 10px;
+
+    background:
+        var(--purple-light);
+}
+
+
+/* =====================================================
+   CONTENU
+   ===================================================== */
+
+.welcome-section {
+
+    position: relative;
+
+    z-index: 5;
+
+    width: 600px;
+
+    margin-top: 70px;
+
+    text-align: center;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+}
+
+
+/* =====================================================
+   BADGE
+   ===================================================== */
+
+.welcome-badge {
+
+    padding: 8px 15px;
+
+    border-radius: 30px;
+
+    color: var(--blue-light);
+
+    background:
+        rgba(59,130,246,0.07);
+
+    border:
+        1px solid
+        rgba(96,165,250,0.18);
+
+    font-size: 11px;
+
+    letter-spacing: 1.5px;
+
+    margin-bottom: 20px;
+
+    animation:
+        fadeUp 0.7s ease;
+}
+
+
+/* =====================================================
+   DÉCORATION
+   ===================================================== */
+
+.decoration {
+
+    width: 75px;
+
+    height: 4px;
+
+    border-radius: 20px;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--cyan),
+            var(--blue),
+            var(--purple)
+        );
+
+    box-shadow:
+        0 0 18px
+        rgba(59,130,246,0.5);
+
+    margin-bottom: 28px;
+}
+
+
+/* =====================================================
+   TITRE
+   ===================================================== */
+
+h1 {
+
+    font-size: 48px;
+
+    line-height: 1.12;
+
+    color: var(--white);
+
+    margin-bottom: 22px;
+
+    animation:
+        fadeUp 0.8s ease 0.1s both;
+}
+
+
+h1 span {
+
+    display: block;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--blue-light),
+            var(--purple-light)
+        );
+
+    -webkit-background-clip: text;
+
+    -webkit-text-fill-color: transparent;
+}
+
+
+/* =====================================================
+   DESCRIPTION
+   ===================================================== */
+
+.description {
+
+    max-width: 550px;
+
+    color: var(--muted);
+
+    font-size: 16px;
+
+    line-height: 1.7;
+
+    margin-bottom: 34px;
+
+    animation:
+        fadeUp 0.8s ease 0.2s both;
+}
+
+
+/* =====================================================
+   ANIMATION
+   ===================================================== */
+
+@keyframes fadeUp {
+
+    from {
+
+        opacity: 0;
+
+        transform:
+            translateY(18px);
+
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform:
+            translateY(0);
+
+    }
+}
+
+
+/* =====================================================
+   BOUTONS
+   ===================================================== */
+
+.buttons {
+
+    display: flex;
+
+    gap: 14px;
+
+    animation:
+        fadeUp 0.8s ease 0.3s both;
+}
+
+
+.btn {
+
+    width: 210px;
+
+    height: 54px;
+
+    padding: 0 20px;
+
+    border-radius: 14px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    text-decoration: none;
+
+    font-size: 15px;
+
+    font-weight: bold;
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        border 0.25s ease;
+}
+
+
+/* =====================================================
+   CONNEXION
+   ===================================================== */
+
+.btn-primary {
+
+    color: white;
+
+    background:
+        linear-gradient(
+            110deg,
+            var(--blue),
+            var(--purple)
+        );
+
+    box-shadow:
+        0 12px 30px
+        rgba(59,130,246,0.2);
+}
+
+
+.btn-primary:hover {
+
+    transform:
+        translateY(-4px);
+
+    box-shadow:
+        0 18px 40px
+        rgba(139,92,246,0.35);
+}
+
+
+/* =====================================================
+   INSCRIPTION
+   ===================================================== */
+
+.btn-secondary {
+
+    color: var(--text);
+
+    background:
+        rgba(255,255,255,0.035);
+
+    border:
+        1px solid
+        rgba(255,255,255,0.08);
+}
+
+
+.btn-secondary:hover {
+
+    transform:
+        translateY(-4px);
+
+    border-color:
+        rgba(139,92,246,0.4);
+
+    background:
+        rgba(139,92,246,0.08);
+}
+
+
+/* =====================================================
+   FLÈCHES
+   ===================================================== */
+
+.arrow {
+
+    font-size: 20px;
+
+    transition:
+        transform 0.25s ease;
+}
+
+
+.btn:hover .arrow {
+
+    transform:
+        translateX(5px);
+}
+
+
+/* =====================================================
+   TEXTE BAS
+   ===================================================== */
+
+.bottom-text {
+
+    margin-top: 30px;
+
+    color: #566176;
+
+    font-size: 12px;
+
+    animation:
+        fadeUp 0.8s ease 0.4s both;
+}
+
+
+/* =====================================================
+   MOBILE
+   ===================================================== */
+
+@media (max-width: 700px) {
+
+    .container {
+
+        width: 94%;
+
+        min-height: 700px;
+    }
+
+
+    .skolae-logo {
+
+        top: 45px;
+    }
+
+
+    .logo-text {
+
+        font-size: 30px;
+    }
+
+
+    .welcome-section {
+
+        width: 100%;
+
+        padding: 30px;
+
+        margin-top: 70px;
+    }
+
+
+    h1 {
+
+        font-size: 34px;
+    }
+
+
+    .description {
+
+        font-size: 14px;
+    }
+
+
+    .buttons {
+
+        flex-direction: column;
+    }
+
+
+    .btn {
+
+        width: 230px;
+    }
+}
