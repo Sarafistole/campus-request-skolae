@@ -254,6 +254,37 @@ def register():
 
 @app.route("/confirm", methods=["GET", "POST"])
 def confirm():
+    # Confirmation directe depuis le lien reçu par email.
+    url_email = request.args.get("email", "").strip().lower()
+    url_code = request.args.get("code", "").strip()
+
+    if url_email and url_code:
+        student = Student.query.filter_by(email=url_email).first()
+
+        if student is None:
+            return render_template(
+                "confirm.html",
+                error="Lien de confirmation invalide ou expiré."
+            ), 400
+
+        if not secrets.compare_digest(
+            url_code,
+            student.confirmation_code or ""
+        ):
+            return render_template(
+                "confirm.html",
+                error="Lien de confirmation invalide ou expiré."
+            ), 400
+
+        student.is_confirmed = True
+        student.confirmation_code = None
+        db.session.commit()
+
+        session.pop("pending_student_email", None)
+
+        return redirect(url_for("login"))
+
+    # Confirmation manuelle avec le code à 6 chiffres.
     email = session.get("pending_student_email")
 
     if not email:
@@ -268,7 +299,10 @@ def confirm():
     if request.method == "GET":
         return render_template("confirm.html")
 
-    submitted_code = request.form.get("confirmation_code", "").strip()
+    submitted_code = request.form.get(
+        "confirmation_code",
+        ""
+    ).strip()
 
     if not secrets.compare_digest(
         submitted_code,
@@ -420,12 +454,25 @@ def create_ticket():
     if len(selected_tags) != len(tag_ids):
         return "Un ou plusieurs sujets/services sont invalides.", 400
 
+    # ROUTING-02 :
+    # détermine les services cibles recommandés à partir
+    # des correspondances définies sur les tags par ROUTING-01.
+    # Un tag sans correspondance ne bloque pas la création.
+    recommended_services = list(
+        dict.fromkeys(
+            tag.target_service
+            for tag in selected_tags
+            if tag.target_service
+        )
+    )
+
     ticket = Ticket(
         student_id=student_id,
         request_type_id=request_type.id,
         title=title,
         description=description,
         scope=scope,
+        recommended_services=recommended_services,
         classe_personnes_concernees=precision or None,
         tags=selected_tags
     )
