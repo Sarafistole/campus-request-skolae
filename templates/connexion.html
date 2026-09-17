@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Campus Request | SKOLAE</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <main class="container">
+
+        <!-- Décorations -->
+        <div class="background-orb orb-blue"></div>
+        <div class="background-orb orb-purple"></div>
+        <div class="background-grid"></div>
+
+
+        <!-- =========================
+             LOGO SKOLAE
+             ========================= -->
+
+        <div class="skolae-logo">
+
+            <div class="logo-text">
+                SKOLAE
+            </div>
+
+            <!-- Yeux -->
+            <div class="eyes">
+
+                <div class="eye">
+                    <div class="pupil"></div>
+                </div>
+
+                <div class="eye">
+                    <div class="pupil"></div>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             CONTENU
+             ========================= -->
+
+        <section class="welcome-section">
+
+            <div class="welcome-badge">
+                ✦ PLATEFORME ÉTUDIANTE
+            </div>
+
+            <div class="decoration"></div>
+
+            <h1>
+                Bienvenue sur
+                <span>Campus Request</span>
+            </h1>
+
+            <p class="description">
+                Une plateforme simple et centralisée pour
+                gérer les demandes des étudiants auprès
+                de leur établissement.
+            </p>
+
+
+            <!-- =========================
+                 BOUTONS
+                 ========================= -->
+
+            <div class="buttons">
+
+                <a
+                    href="{{ url_for('login') }}"
+                    class="btn btn-primary"
+                    id="loginButton"
+                >
+                    <span>Se connecter</span>
+                    <span class="arrow">→</span>
+                </a>
+
+                <a
+                    href="{{ url_for('register') }}"
+                    class="btn btn-secondary"
+                >
+                    <span>Créer un compte</span>
+                    <span class="arrow">→</span>
+                </a>
+
+            </div>
+
+            <p class="bottom-text">
+                Un espace unique pour vos demandes étudiantes
+            </p>
+
+        </section>
+
+    </main>
+
+
+    <!-- =========================
+         JAVASCRIPT
+         YEUX QUI SUIVENT LA SOURIS
+         ========================= -->
+
+    <script>
+
+        const pupils =
+            document.querySelectorAll(".pupil");
+
+        const eyes =
+            document.querySelectorAll(".eye");
+
+
+        document.addEventListener(
+            "mousemove",
+            function (event) {
+
+                pupils.forEach(function (pupil) {
+
+                    const eye =
+                        pupil.parentElement;
+
+                    const eyeRect =
+                        eye.getBoundingClientRect();
+
+
+                    const eyeCenterX =
+                        eyeRect.left
+                        + eyeRect.width / 2;
+
+                    const eyeCenterY =
+                        eyeRect.top
+                        + eyeRect.height / 2;
+
+
+                    const angle =
+                        Math.atan2(
+                            event.clientY - eyeCenterY,
+                            event.clientX - eyeCenterX
+                        );
+
+
+                    /*
+                     * Petite distance pour que
+                     * la pupille reste dans l'œil.
+                     */
+
+                    const distance = 5;
+
+
+                    const x =
+                        Math.cos(angle)
+                        * distance;
+
+                    const y =
+                        Math.sin(angle)
+                        * distance;
+
+
+                    pupil.style.transform =
+                        `translate(${x}px, ${y}px)`;
+
+                });
+
+            }
+        );
+
+
+        /* =========================
+           FERMETURE DES YEUX
+           ========================= */
+
+        const loginButton =
+            document.getElementById("loginButton");
+
+
+        loginButton.addEventListener(
+            "click",
+            function () {
+
+                eyes.forEach(function (eye) {
+
+                    eye.classList.add("closed");
+
+                });
+
+            }
+        );
+
+
+        /* =========================
+           CLIGNEMENT AUTOMATIQUE
+           ========================= */
+
+        function blink() {
+
+            eyes.forEach(function (eye) {
+
+                eye.classList.add("closed");
+
+            });
+
+
+            setTimeout(function () {
+
+                eyes.forEach(function (eye) {
+
+                    eye.classList.remove("closed");
+
+                });
+
+            }, 180);
+
+        }
+
+
+        /*
+         * Le logo cligne des yeux
+         * de temps en temps.
+         */
+
+        setInterval(
+            blink,
+            5000
+        );
+
+    </script>
+
+</body>
+
+</html>
