@@ -15,9 +15,14 @@ class Tag(db.Model):
         nullable=False
     )
 
-    # Service administratif recommandé pour traiter
+    # Services administratifs recommandés pour traiter
     # les tickets associés à ce sujet.
-    target_service = db.Column(
-        db.String(100),
-        nullable=True
+    #
+    # Un même sujet peut être routé vers plusieurs services.
+    # Exemple :
+    # ["Direction", "Pédagogie"]
+    target_services = db.Column(
+        db.JSON,
+        nullable=False,
+        default=list
     )
