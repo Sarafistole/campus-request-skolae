@@ -4,6 +4,9 @@ import uuid
 from extensions import db
 
 
+# Table d'association entre les tickets et leurs tags.
+# Un ticket peut posséder plusieurs tags et un tag peut être
+# associé à plusieurs tickets.
 ticket_tags = db.Table(
     "ticket_tags",
     db.Column(
@@ -29,7 +32,8 @@ class Ticket(db.Model):
         primary_key=True
     )
 
-    # Identifiant public utilisé dans les vues/routes
+    # Identifiant public utilisé dans les vues/routes.
+    # L'identifiant interne numérique ne doit pas être exposé.
     public_id = db.Column(
         db.String(36),
         unique=True,
@@ -37,7 +41,7 @@ class Ticket(db.Model):
         default=lambda: str(uuid.uuid4())
     )
 
-    # Auteur connu en interne, mais à ne pas exposer aux admins
+    # Auteur connu en interne, mais à ne pas exposer aux admins.
     student_id = db.Column(
         db.Integer,
         db.ForeignKey("students.id"),
@@ -52,7 +56,7 @@ class Ticket(db.Model):
         nullable=False
     )
 
-    # Contenu principal du ticket
+    # Contenu principal du ticket.
     title = db.Column(
         db.String(255),
         nullable=False
@@ -63,20 +67,46 @@ class Ticket(db.Model):
         nullable=False
     )
 
-    # Classe et/ou personne(s) concernée(s) - champ facultatif
+    # Personne(s) concernée(s) par la demande.
+    # Valeurs autorisées :
+    # SELF / INDIVIDUAL / GROUP
+    scope = db.Column(
+        db.String(20),
+        nullable=False
+    )
+
+    # Services administratifs recommandés par le routage automatique.
+    #
+    # Cette liste est calculée à partir des target_service
+    # des tags sélectionnés lors de la création du ticket.
+    #
+    # Exemple :
+    # ["Scolarité", "Vie étudiante"]
+    #
+    # Le résultat est enregistré sur le ticket afin de permettre
+    # une correction manuelle ultérieure par un modérateur
+    # sans modifier le mapping général des tags.
+    recommended_services = db.Column(
+        db.JSON,
+        nullable=False,
+        default=list
+    )
+
+    # Classe et/ou personne(s) concernée(s).
+    # Cette précision est facultative.
     classe_personnes_concernees = db.Column(
         db.String(255),
         nullable=True
     )
 
-    # Statut du ticket
+    # Statut du ticket.
     status = db.Column(
         db.String(50),
         nullable=False,
         default="NEW"
     )
 
-    # Dates de création et de dernière modification
+    # Dates de création et de dernière modification.
     created_at = db.Column(
         db.DateTime,
         default=datetime.utcnow
@@ -88,7 +118,8 @@ class Ticket(db.Model):
         onupdate=datetime.utcnow
     )
 
-    # Service/Sujet du ticket
+    # Services/Sujets sélectionnés par l'étudiant.
+    # Entre 1 et 5 tags sont autorisés par la route de création.
     tags = db.relationship(
         "Tag",
         secondary=ticket_tags,
