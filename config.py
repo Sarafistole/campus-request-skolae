@@ -16,3 +16,11 @@ class Config:
     # Configuration Brevo pour l'envoi des codes de vérification.
     BREVO_API_KEY = os.getenv("BREVO_API_KEY")
     SMTP_SENDER = os.getenv("SMTP_SENDER")
+
+    # URL publique de l'application utilisée pour générer
+    # les liens présents dans les emails.
+    BASE_URL = os.getenv("BASE_URL", "http://localhost:5000")
+
+    # Proxy SOCKS optionnel utilisé pour l'envoi Brevo.
+    # Laisser vide lorsqu'aucun proxy n'est nécessaire.
+    SOCKS_PROXY = os.getenv("SOCKS_PROXY")
