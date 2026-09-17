@@ -17,31 +17,51 @@
     <div class="admin-detail-layout">
 
         <!-- Navigation -->
-        <aside class="admin-sidebar">
+        <!-- Barre de navigation administrateur -->
+    <header class="admin-topbar">
 
-            <div class="admin-brand">
-                <h1>Campus Request</h1>
-                <span>Espace administration</span>
-            </div>
+        <div class="admin-topbar-brand">
+            <h1>Campus Request</h1>
+            <span>Espace administration</span>
+        </div>
 
-            <nav class="admin-nav">
-                <a href="#" class="admin-nav-link active">
+        <div class="admin-menu-container">
+
+            <button
+                class="admin-menu-button"
+                id="admin-menu-button"
+                type="button"
+                aria-expanded="false"
+                aria-controls="admin-menu"
+        >
+                Menu
+                <span class="admin-menu-arrow">▾</span>
+            </button>
+
+            <nav class="admin-dropdown-menu" id="admin-menu">
+
+                <a
+                    href="{{ url_for('admin_dashboard') }}"
+                    class="admin-dropdown-link active"
+            >
                     File de modération
                 </a>
 
-                <a href="#" class="admin-nav-link">
+                <a href="#" class="admin-dropdown-link">
                     Tickets traités
                 </a>
-            </nav>
 
-            <div class="admin-sidebar-footer">
-                <span>Administrateur</span>
-                <a href="#" class="admin-logout">
+                <div class="admin-dropdown-separator"></div>
+
+                <a href="#" class="admin-dropdown-link admin-logout">
                     Déconnexion
                 </a>
-            </div>
 
-        </aside>
+            </nav>
+
+        </div>
+
+    </header>
 
 
         <!-- Contenu -->
@@ -291,6 +311,35 @@
         </main>
 
     </div>
+<script>
+    const menuButton = document.getElementById("admin-menu-button");
+    const adminMenu = document.getElementById("admin-menu");
 
+    menuButton.addEventListener("click", function (event) {
+        event.stopPropagation();
+
+        adminMenu.classList.toggle("open");
+
+        const isOpen = adminMenu.classList.contains("open");
+        menuButton.setAttribute("aria-expanded", isOpen);
+    });
+
+    document.addEventListener("click", function (event) {
+        if (
+            !adminMenu.contains(event.target) &&
+            !menuButton.contains(event.target)
+        ) {
+            adminMenu.classList.remove("open");
+            menuButton.setAttribute("aria-expanded", "false");
+        }
+    });
+
+    document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") {
+            adminMenu.classList.remove("open");
+            menuButton.setAttribute("aria-expanded", "false");
+        }
+    });
+</script>
 </body>
 </html>
