@@ -15,10 +15,10 @@ app = Flask(__name__)
 # Chargement de la configuration
 app.config.from_object(Config)
 
-# Connexion de SQLAlchemy à Flask
+# Connexion de SQLAlchemy a Flask
 db.init_app(app)
 
-# Connexion de Flask-Migrate à Flask et SQLAlchemy
+# Connexion de Flask-Migrate a Flask et SQLAlchemy
 migrate.init_app(app, db)
 
 
@@ -40,7 +40,6 @@ def register():
     email = request.form.get("email", "").strip().lower()
     password = request.form.get("password", "")
 
-    # L'inscription est réservée aux adresses scolaires MySkolae.
     if not email.endswith("@myskolae.fr"):
         return render_template(
             "register.html",
@@ -72,17 +71,14 @@ def register():
         )
         db.session.add(student)
     else:
-        # Un compte non confirmé peut recommencer son inscription.
         student.password_hash = generate_password_hash(password)
         student.confirmation_code = confirmation_code
 
     try:
-        # On tente l'envoi avant de valider définitivement la transaction.
-        send_confirmation_email(email, confirmation_code)
+        send_confirmation_email(email, confirmation_code, request.host_url)
         db.session.commit()
     except Exception:
         db.session.rollback()
-
         return render_template(
             "register.html",
             error=(
@@ -92,19 +88,28 @@ def register():
         ), 503
 
     session["pending_student_email"] = email
-
     return redirect(url_for("confirm"))
 
 
 @app.route("/confirm", methods=["GET", "POST"])
 def confirm():
-    email = session.get("pending_student_email")
+    url_email = request.args.get("email")
+    url_code = request.args.get("code")
+    if url_email and url_code:
+        student = Student.query.filter_by(email=url_email).first()
+        if student and secrets.compare_digest(url_code, student.confirmation_code or ""):
+            student.is_confirmed = True
+            student.confirmation_code = None
+            db.session.commit()
+            session.pop("pending_student_email", None)
+            return redirect(url_for("login"))
+        return render_template("confirm.html", error="Lien de confirmation invalide ou expiré."), 400
 
+    email = session.get("pending_student_email")
     if not email:
         return redirect(url_for("register"))
 
     student = Student.query.filter_by(email=email).first()
-
     if student is None:
         session.pop("pending_student_email", None)
         return redirect(url_for("register"))
@@ -113,20 +118,12 @@ def confirm():
         return render_template("confirm.html")
 
     submitted_code = request.form.get("confirmation_code", "").strip()
-
-    if not secrets.compare_digest(
-        submitted_code,
-        student.confirmation_code or ""
-    ):
-        return render_template(
-            "confirm.html",
-            error="Code de vérification incorrect."
-        ), 400
+    if not secrets.compare_digest(submitted_code, student.confirmation_code or ""):
+        return render_template("confirm.html", error="Code de vérification incorrect."), 400
 
     student.is_confirmed = True
     student.confirmation_code = None
     db.session.commit()
-
     session.pop("pending_student_email", None)
 
     return redirect(url_for("login"))
@@ -164,7 +161,6 @@ def login():
         ), 403
 
     session["student_id"] = student.id
-
     return redirect(url_for("home"))
 
 
@@ -176,20 +172,15 @@ def logout():
 
 @app.route("/tickets/create", methods=["GET", "POST"])
 def create_ticket():
-    # Un ticket doit obligatoirement appartenir à un étudiant connecté.
     student_id = session.get("student_id")
-
     if student_id is None:
         return redirect(url_for("login"))
 
-    # Vérifie que l'étudiant enregistré dans la session existe toujours.
     student = db.session.get(Student, student_id)
-
     if student is None:
         session.pop("student_id", None)
         return redirect(url_for("login"))
 
-    # Les données nécessaires au formulaire.
     request_types = RequestType.query.order_by(RequestType.name).all()
     tags = Tag.query.order_by(Tag.name).all()
 
@@ -200,59 +191,44 @@ def create_ticket():
             tags=tags
         )
 
-    # Récupération et normalisation des données du formulaire.
     title = request.form.get("title", "").strip()
     description = request.form.get("description", "").strip()
     request_type_id = request.form.get("request_type_id", type=int)
     scope = request.form.get("scope", "").strip().upper()
-    precision = request.form.get(
-        "classe_personnes_concernees",
-        ""
-    ).strip()
-
-    # getlist permet de recevoir plusieurs tags depuis le formulaire.
+    precision = request.form.get("classe_personnes_concernees", "").strip()
     tag_ids_raw = request.form.getlist("tag_ids")
 
-    # Suppression des doublons tout en conservant l'ordre.
     try:
         tag_ids = list(dict.fromkeys(int(tag_id) for tag_id in tag_ids_raw))
     except (TypeError, ValueError):
         return "Sélection de tags invalide.", 400
 
-    # Validation du titre.
     if not title:
         return "Le titre est obligatoire.", 400
 
     if len(title) > 255:
         return "Le titre ne peut pas dépasser 255 caractères.", 400
 
-    # Validation de la description.
     if not description:
         return "La description est obligatoire.", 400
 
     if len(description) > 5000:
         return "La description ne peut pas dépasser 5000 caractères.", 400
-    
-    # Validation du type de demande.
+
     if request_type_id is None:
         return "Le type de demande est obligatoire.", 400
 
     request_type = db.session.get(RequestType, request_type_id)
-
     if request_type is None:
         return "Type de demande invalide.", 400
 
-    # Validation de la personne / du groupe concerné.
     allowed_scopes = {"SELF", "INDIVIDUAL", "GROUP"}
-
     if scope not in allowed_scopes:
         return "Personne(s) concernée(s) invalide(s).", 400
 
-    # La précision reste facultative.
     if len(precision) > 255:
         return "La précision ne peut pas dépasser 255 caractères.", 400
 
-    # Entre 1 et 5 sujets/services doivent être sélectionnés.
     if not 1 <= len(tag_ids) <= 5:
         return "Vous devez sélectionner entre 1 et 5 sujets/services.", 400
 
@@ -260,7 +236,6 @@ def create_ticket():
         db.select(Tag).where(Tag.id.in_(tag_ids))
     ).scalars().all()
 
-    # Empêche l'envoi d'identifiants de tags inexistants.
     if len(selected_tags) != len(tag_ids):
         return "Un ou plusieurs sujets/services sont invalides.", 400
 
@@ -276,7 +251,6 @@ def create_ticket():
 
     db.session.add(ticket)
     db.session.commit()
-
     return redirect(url_for("home"))
 
 
