@@ -435,11 +435,18 @@ def admin_dashboard():
         session.pop("admin_id", None)
         return redirect(url_for("admin_login"))
 
-    return render_template("admin-dashboard.html")
+    tickets = Ticket.query.order_by(Ticket.created_at.desc()).all()
+    services = Service.query.order_by(Service.name).all()
 
+    return render_template(
+        "admin-dashboard.html",
+        tickets=tickets,
+        services=services,
+        ticket_statuses=TICKET_STATUSES,
+    )
 
-@app.route("/admin/tickets/demo")
-def admin_ticket_demo():
+@app.route("/admin/tickets/<string:public_id>")
+def admin_ticket_detail(public_id):
     admin_id = session.get("admin_id")
 
     if admin_id is None:
@@ -451,7 +458,19 @@ def admin_ticket_demo():
         session.pop("admin_id", None)
         return redirect(url_for("admin_login"))
 
-    return render_template("admin-ticket-detail.html")
+    ticket = Ticket.query.filter_by(public_id=public_id).first()
+
+    if ticket is None:
+        return "Ticket introuvable.", 404
+
+    services = Service.query.order_by(Service.name).all()
+
+    return render_template(
+        "admin-ticket-detail.html",
+        ticket=ticket,
+        services=services,
+        ticket_statuses=TICKET_STATUSES,
+    )
 
 @app.route("/admin/tickets/<string:public_id>/status", methods=["POST"])
 def admin_ticket_status(public_id):
@@ -486,7 +505,9 @@ def admin_ticket_status(public_id):
 
     # ADMIN-02 remplacera ensuite cette redirection par
     # la véritable page de détail du ticket.
-    return redirect(url_for("admin_ticket_demo"))
+    return redirect(
+        url_for("admin_ticket_detail", public_id=ticket.public_id)
+    )
 
 @app.route(
     "/admin/tickets/<string:public_id>/service",
@@ -535,7 +556,9 @@ def admin_ticket_service(public_id):
 
     db.session.commit()
 
-    return redirect(url_for("admin_ticket_demo"))
+    return redirect(
+        url_for("admin_ticket_detail", public_id=ticket.public_id)
+    )
 
 @app.route("/admin/login", methods=["GET", "POST"])
 def admin_login():

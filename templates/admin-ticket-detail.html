@@ -17,31 +17,51 @@
     <div class="admin-detail-layout">
 
         <!-- Navigation -->
-        <aside class="admin-sidebar">
+        <header class="admin-topbar">
 
-            <div class="admin-brand">
+            <div class="admin-topbar-brand">
                 <h1>Campus Request</h1>
                 <span>Espace administration</span>
             </div>
 
-            <nav class="admin-nav">
-                <a href="#" class="admin-nav-link active">
-                    File de modération
-                </a>
+            <div class="admin-menu-container">
 
-                <a href="#" class="admin-nav-link">
-                    Tickets traités
-                </a>
-            </nav>
+                <button
+                    type="button"
+                    class="admin-menu-button"
+                    aria-label="Ouvrir le menu administrateur"
+                    aria-expanded="false"
+                >
+                    ☰
+                </button>
 
-            <div class="admin-sidebar-footer">
-                <span>Administrateur</span>
-                <a href="#" class="admin-logout">
-                    Déconnexion
-                </a>
+                <div class="admin-dropdown-menu">
+
+                    <a
+                        href="{{ url_for('admin_dashboard') }}"
+                        class="admin-dropdown-link active"
+                    >
+                        File de modération
+                    </a>
+
+                    <a href="#" class="admin-dropdown-link">
+                        Tickets traités
+                    </a>
+
+                    <div class="admin-dropdown-separator"></div>
+
+                    <a
+                        href="{{ url_for('logout') }}"
+                        class="admin-dropdown-link admin-logout"
+                    >
+                        Déconnexion
+                    </a>
+
+                </div>
+
             </div>
 
-        </aside>
+        </header>
 
 
         <!-- Contenu -->
@@ -58,25 +78,22 @@
 
                     <div>
                         <p class="ticket-reference">
-                            CR-2026-0043
+                            {{ ticket.public_id }}
                         </p>
 
                         <h2>
-                            Situation préoccupante sur le campus
+                            {{ ticket.title }}
                         </h2>
 
                         <p class="ticket-date">
-                            Reçu le 17/09/2026 à 17:16
+                            Reçu le
+                            {{ ticket.created_at.strftime('%d/%m/%Y à %H:%M') }}
                         </p>
                     </div>
 
                     <div class="ticket-badges">
                         <span class="badge badge-new">
-                            Nouveau
-                        </span>
-
-                        <span class="badge badge-vigilance">
-                            Vigilance
+                            {{ ticket_statuses.get(ticket.status, ticket.status) }}
                         </span>
                     </div>
 
@@ -90,6 +107,7 @@
                 <!-- Colonne principale -->
                 <section class="ticket-content">
 
+                    <!-- Demande étudiante -->
                     <article class="detail-card">
 
                         <div class="detail-card-header">
@@ -106,39 +124,65 @@
                                 <span class="metadata-label">
                                     Nature
                                 </span>
-                                <strong>Signaler</strong>
+
+                                <strong>
+                                    {{ ticket.request_type.name }}
+                                </strong>
                             </div>
 
                             <div class="metadata-item">
                                 <span class="metadata-label">
                                     Personnes concernées
                                 </span>
-                                <strong>Groupe</strong>
+
+                                <strong>
+                                    {% if ticket.scope == "SELF" %}
+                                        Moi-même
+                                    {% elif ticket.scope == "INDIVIDUAL" %}
+                                        Une personne
+                                    {% elif ticket.scope == "GROUP" %}
+                                        Groupe
+                                    {% else %}
+                                        {{ ticket.scope }}
+                                    {% endif %}
+                                </strong>
                             </div>
 
                             <div class="metadata-item">
                                 <span class="metadata-label">
                                     Sujet
                                 </span>
-                                <strong>Harcèlement</strong>
+
+                                <strong>
+                                    {% if ticket.tags %}
+                                        {{ ticket.tags
+                                            | map(attribute='name')
+                                            | join(', ')
+                                        }}
+                                    {% else %}
+                                        Aucun sujet
+                                    {% endif %}
+                                </strong>
                             </div>
 
                         </div>
+
+                        {% if ticket.classe_personnes_concernees %}
+                            <div class="ticket-message">
+                                <h4>Précision sur les personnes concernées</h4>
+
+                                <p>
+                                    {{ ticket.classe_personnes_concernees }}
+                                </p>
+                            </div>
+                        {% endif %}
 
                         <div class="ticket-message">
 
                             <h4>Description</h4>
 
                             <p>
-                                Je souhaite signaler une situation
-                                récurrente sur le campus qui nécessite
-                                une attention particulière.
-                            </p>
-
-                            <p>
-                                Plusieurs comportements problématiques
-                                ont été constatés et la situation semble
-                                se répéter depuis plusieurs jours.
+                                {{ ticket.description }}
                             </p>
 
                         </div>
@@ -146,51 +190,16 @@
                     </article>
 
 
-                    <!-- Zone modération -->
+                    <!-- Analyse de modération -->
                     <article class="detail-card moderation-card">
 
                         <div class="detail-card-header">
                             <h3>Analyse de modération</h3>
                         </div>
 
-                        <div class="moderation-signals">
-
-                            <div class="moderation-signal">
-                                <span class="signal-label">
-                                    Niveau de vigilance
-                                </span>
-
-                                <strong class="signal-vigilance">
-                                    Vigilance requise
-                                </strong>
-                            </div>
-
-                            <div class="moderation-signal">
-                                <span class="signal-label">
-                                    Priorité
-                                </span>
-
-                                <strong>
-                                    Haute
-                                </strong>
-                            </div>
-
-                            <div class="moderation-signal">
-                                <span class="signal-label">
-                                    Similarité détectée
-                                </span>
-
-                                <strong>
-                                    Aucun regroupement
-                                </strong>
-                            </div>
-
-                        </div>
-
                         <p class="moderation-placeholder">
-                            Les indicateurs de modération seront
-                            alimentés automatiquement par le moteur
-                            de modération.
+                            Les indicateurs de modération seront alimentés
+                            automatiquement par le moteur de modération.
                         </p>
 
                     </article>
@@ -208,25 +217,67 @@
 
                         <div class="routing-current">
                             <span>Service recommandé</span>
-                            <strong>Vie étudiante</strong>
+
+                            <strong>
+                                {% if ticket.recommended_services %}
+                                    {{ ticket.recommended_services | join(', ') }}
+                                {% else %}
+                                    Aucun service recommandé
+                                {% endif %}
+                            </strong>
                         </div>
 
-                        <label for="service-select">
-                            Modifier la destination
-                        </label>
+                        {% if ticket.assigned_service %}
+                            <div class="routing-current">
+                                <span>Service affecté</span>
 
-                        <select id="service-select">
-                            <option>Vie étudiante</option>
-                            <option>Scolarité</option>
-                            <option>Infrastructure</option>
-                        </select>
+                                <strong>
+                                    {{ ticket.assigned_service.name }}
+                                </strong>
+                            </div>
+                        {% endif %}
 
-                        <button
-                            type="button"
-                            class="button button-secondary"
+                        <form
+                            method="post"
+                            action="{{ url_for(
+                                'admin_ticket_service',
+                                public_id=ticket.public_id
+                            ) }}"
                         >
-                            Modifier le service
-                        </button>
+
+                            <label for="service-select">
+                                Modifier la destination
+                            </label>
+
+                            <select
+                                id="service-select"
+                                name="service_id"
+                                required
+                            >
+                                <option value="">
+                                    Sélectionner un service
+                                </option>
+
+                                {% for service in services %}
+                                    <option
+                                        value="{{ service.id }}"
+                                        {% if ticket.assigned_service_id == service.id %}
+                                            selected
+                                        {% endif %}
+                                    >
+                                        {{ service.name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+
+                            <button
+                                type="submit"
+                                class="button button-secondary"
+                            >
+                                Modifier le service
+                            </button>
+
+                        </form>
 
                     </article>
 
@@ -238,22 +289,55 @@
 
                         <div class="status-current">
                             <span>Statut actuel</span>
-                            <strong>Nouveau</strong>
+
+                            <strong>
+                                {{ ticket_statuses.get(
+                                    ticket.status,
+                                    ticket.status
+                                ) }}
+                            </strong>
                         </div>
 
-                        <button
-                            type="button"
-                            class="button button-primary"
+                        <form
+                            method="post"
+                            action="{{ url_for(
+                                'admin_ticket_status',
+                                public_id=ticket.public_id
+                            ) }}"
                         >
-                            Prendre en charge
-                        </button>
 
-                        <button
-                            type="button"
-                            class="button button-success"
-                        >
-                            Marquer comme traité
-                        </button>
+                            <label for="status-select">
+                                Modifier le statut
+                            </label>
+
+                            <select
+                                id="status-select"
+                                name="status"
+                                required
+                            >
+                                {% for status_value, status_label
+                                    in ticket_statuses.items() %}
+
+                                    <option
+                                        value="{{ status_value }}"
+                                        {% if ticket.status == status_value %}
+                                            selected
+                                        {% endif %}
+                                    >
+                                        {{ status_label }}
+                                    </option>
+
+                                {% endfor %}
+                            </select>
+
+                            <button
+                                type="submit"
+                                class="button button-primary"
+                            >
+                                Enregistrer le statut
+                            </button>
+
+                        </form>
 
                     </article>
 
@@ -267,17 +351,29 @@
 
                             <div>
                                 <dt>Référence</dt>
-                                <dd>CR-2026-0043</dd>
+                                <dd>{{ ticket.public_id }}</dd>
                             </div>
 
                             <div>
                                 <dt>Création</dt>
-                                <dd>17/09/2026 17:16</dd>
+                                <dd>
+                                    {{ ticket.created_at.strftime(
+                                        '%d/%m/%Y %H:%M'
+                                    ) }}
+                                </dd>
                             </div>
 
                             <div>
                                 <dt>Dernière modification</dt>
-                                <dd>17/09/2026 17:16</dd>
+                                <dd>
+                                    {% if ticket.updated_at %}
+                                        {{ ticket.updated_at.strftime(
+                                            '%d/%m/%Y %H:%M'
+                                        ) }}
+                                    {% else %}
+                                        —
+                                    {% endif %}
+                                </dd>
                             </div>
 
                         </dl>
@@ -291,6 +387,46 @@
         </main>
 
     </div>
+
+
+    <script>
+        const menuButton =
+            document.querySelector(".admin-menu-button");
+
+        const dropdownMenu =
+            document.querySelector(".admin-dropdown-menu");
+
+        if (menuButton && dropdownMenu) {
+
+            menuButton.addEventListener("click", function (event) {
+                event.stopPropagation();
+
+                const isOpen =
+                    dropdownMenu.classList.toggle("open");
+
+                menuButton.setAttribute(
+                    "aria-expanded",
+                    isOpen ? "true" : "false"
+                );
+            });
+
+            dropdownMenu.addEventListener(
+                "click",
+                function (event) {
+                    event.stopPropagation();
+                }
+            );
+
+            document.addEventListener("click", function () {
+                dropdownMenu.classList.remove("open");
+
+                menuButton.setAttribute(
+                    "aria-expanded",
+                    "false"
+                );
+            });
+        }
+    </script>
 
 </body>
 </html>
