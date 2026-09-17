@@ -24,10 +24,22 @@ migrate.init_app(app, db)
 
 @app.route("/")
 def home():
-    return "Campus Request : WELCOME !"
+    return render_template("connexion.html")
 
 @app.route("/dashboard", methods=["GET", "POST"])
 def dashboard():
+
+    # Vérification de la connexion étudiant
+    student_id = session.get("student_id")
+
+    if student_id is None:
+        return redirect(url_for("login"))
+
+    student = db.session.get(Student, student_id)
+
+    if student is None:
+        session.pop("student_id", None)
+        return redirect(url_for("login"))
 
     # Récupération des données nécessaires au formulaire
     request_types = RequestType.query.order_by(RequestType.name).all()
@@ -36,16 +48,11 @@ def dashboard():
     # Envoi du formulaire
     if request.method == "POST":
 
-        # Vérification de la connexion
-        student_id = session.get("student_id")
-
-        if not student_id:
-            return redirect(url_for("login"))
-
         title = request.form.get("title", "").strip()
         request_type_id = request.form.get("request_type_id")
         description = request.form.get("description", "").strip()
-        scope = request.form.get("scope")
+        scope = request.form.get("scope", "").strip()
+
         classe_personnes_concernees = request.form.get(
             "classe_personnes_concernees",
             ""
@@ -61,6 +68,33 @@ def dashboard():
                 request_types=request_types,
                 tags=tags,
                 error="Veuillez remplir tous les champs obligatoires."
+            ), 400
+
+        # Limite du titre
+        if len(title) > 255:
+            return render_template(
+                "dashboard_student.html",
+                request_types=request_types,
+                tags=tags,
+                error="Le titre ne doit pas dépasser 255 caractères."
+            ), 400
+
+        # Limite de la description
+        if len(description) > 5000:
+            return render_template(
+                "dashboard_student.html",
+                request_types=request_types,
+                tags=tags,
+                error="La description ne doit pas dépasser 5000 caractères."
+            ), 400
+
+        # Vérification du périmètre
+        if scope not in {"SELF", "INDIVIDUAL", "GROUP"}:
+            return render_template(
+                "dashboard_student.html",
+                request_types=request_types,
+                tags=tags,
+                error="Le périmètre sélectionné est invalide."
             ), 400
 
         # Entre 1 et 5 tags
@@ -96,13 +130,25 @@ def dashboard():
                 error="Un ou plusieurs sujets sont invalides."
             ), 400
 
+        # ROUTING-02 :
+        # détermine automatiquement les services recommandés
+        # à partir des tags sélectionnés.
+        recommended_services = list(
+            dict.fromkeys(
+                tag.target_service
+                for tag in selected_tags
+                if tag.target_service
+            )
+        )
+
         # Création du ticket
         ticket = Ticket(
             student_id=student_id,
             request_type_id=request_type.id,
             title=title,
             description=description,
-            scope=scope,  # ← ajoute cette ligne
+            scope=scope,
+            recommended_services=recommended_services,
             classe_personnes_concernees=classe_personnes_concernees or None,
             status="NEW"
         )
@@ -369,7 +415,7 @@ def login():
 
     session["student_id"] = student.id
 
-    return redirect(url_for("home"))
+    return redirect(url_for("dashboard"))
 
 @app.route("/admin/login", methods=["GET", "POST"])
 def admin_login():
@@ -402,125 +448,6 @@ def admin_login():
 def logout():
     session.pop("student_id", None)
     return redirect(url_for("login"))
-
-
-@app.route("/tickets/create", methods=["GET", "POST"])
-def create_ticket():
-    # Un ticket doit obligatoirement appartenir à un étudiant connecté.
-    student_id = session.get("student_id")
-
-    if student_id is None:
-        return redirect(url_for("login"))
-
-    # Vérifie que l'étudiant enregistré dans la session existe toujours.
-    student = db.session.get(Student, student_id)
-
-    if student is None:
-        session.pop("student_id", None)
-        return redirect(url_for("login"))
-
-    # Les données nécessaires au formulaire.
-    request_types = RequestType.query.order_by(RequestType.name).all()
-    tags = Tag.query.order_by(Tag.name).all()
-
-    if request.method == "GET":
-        return render_template(
-            "create_ticket.html",
-            request_types=request_types,
-            tags=tags
-        )
-
-    # Récupération et normalisation des données du formulaire.
-    title = request.form.get("title", "").strip()
-    description = request.form.get("description", "").strip()
-    request_type_id = request.form.get("request_type_id", type=int)
-    scope = request.form.get("scope", "").strip().upper()
-    precision = request.form.get(
-        "classe_personnes_concernees",
-        ""
-    ).strip()
-
-    # getlist permet de recevoir plusieurs tags depuis le formulaire.
-    tag_ids_raw = request.form.getlist("tag_ids")
-
-    # Suppression des doublons tout en conservant l'ordre.
-    try:
-        tag_ids = list(dict.fromkeys(int(tag_id) for tag_id in tag_ids_raw))
-    except (TypeError, ValueError):
-        return "Sélection de tags invalide.", 400
-
-    # Validation du titre.
-    if not title:
-        return "Le titre est obligatoire.", 400
-
-    if len(title) > 255:
-        return "Le titre ne peut pas dépasser 255 caractères.", 400
-
-    # Validation de la description.
-    if not description:
-        return "La description est obligatoire.", 400
-
-    if len(description) > 5000:
-        return "La description ne peut pas dépasser 5000 caractères.", 400
-    
-    # Validation du type de demande.
-    if request_type_id is None:
-        return "Le type de demande est obligatoire.", 400
-
-    request_type = db.session.get(RequestType, request_type_id)
-
-    if request_type is None:
-        return "Type de demande invalide.", 400
-
-    # Validation de la personne / du groupe concerné.
-    allowed_scopes = {"SELF", "INDIVIDUAL", "GROUP"}
-
-    if scope not in allowed_scopes:
-        return "Personne(s) concernée(s) invalide(s).", 400
-
-    # La précision reste facultative.
-    if len(precision) > 255:
-        return "La précision ne peut pas dépasser 255 caractères.", 400
-
-    # Entre 1 et 5 sujets/services doivent être sélectionnés.
-    if not 1 <= len(tag_ids) <= 5:
-        return "Vous devez sélectionner entre 1 et 5 sujets/services.", 400
-
-    selected_tags = db.session.execute(
-        db.select(Tag).where(Tag.id.in_(tag_ids))
-    ).scalars().all()
-
-    # Empêche l'envoi d'identifiants de tags inexistants.
-    if len(selected_tags) != len(tag_ids):
-        return "Un ou plusieurs sujets/services sont invalides.", 400
-
-    # ROUTING-02 :
-    # détermine les services cibles recommandés à partir
-    # des correspondances définies sur les tags par ROUTING-01.
-    # Un tag sans correspondance ne bloque pas la création.
-    recommended_services = list(
-        dict.fromkeys(
-            tag.target_service
-            for tag in selected_tags
-            if tag.target_service
-        )
-    )
-
-    ticket = Ticket(
-        student_id=student_id,
-        request_type_id=request_type.id,
-        title=title,
-        description=description,
-        scope=scope,
-        recommended_services=recommended_services,
-        classe_personnes_concernees=precision or None,
-        tags=selected_tags
-    )
-
-    db.session.add(ticket)
-    db.session.commit()
-
-    return redirect(url_for("home"))
 
 
 @app.route("/test-db")

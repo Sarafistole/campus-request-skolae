@@ -45,7 +45,7 @@ with app.app_context():
 
 def create_ticket(client, tag_ids, title):
     return client.post(
-        "/tickets/create",
+        "/dashboard",
         data={
             "title": title,
             "description": "Description utilisée pour tester ROUTING-02.",

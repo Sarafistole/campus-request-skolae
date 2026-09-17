@@ -56,6 +56,11 @@ class Ticket(db.Model):
         nullable=False
     )
 
+    request_type = db.relationship(
+        "RequestType",
+        backref="tickets"
+    )
+
     # Contenu principal du ticket.
     title = db.Column(
         db.String(255),

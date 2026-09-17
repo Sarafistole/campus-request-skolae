@@ -4,7 +4,7 @@ from models import Student, Tag
 
 def run_test(name, client, data, expected_status):
     response = client.post(
-        "/tickets/create",
+        "/dashboard",
         data=data,
         follow_redirects=False
     )
@@ -37,7 +37,7 @@ with app.test_client() as client:
     # 1. Utilisateur non connecté
     # ---------------------------------------------------------
     response = client.get(
-        "/tickets/create",
+        "/dashboard",
         follow_redirects=False
     )
 
@@ -185,7 +185,7 @@ with app.test_client() as client:
         session["student_id"] = 999999
 
     response = client.get(
-        "/tickets/create",
+        "/dashboard",
         follow_redirects=False
     )
 
