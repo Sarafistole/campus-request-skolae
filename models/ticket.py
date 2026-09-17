@@ -109,6 +109,22 @@ class Ticket(db.Model):
         default=list
     )
 
+    # Service effectivement choisi par le modérateur.
+    #
+    # Ce champ est indépendant de recommended_services :
+    # la recommandation automatique initiale reste ainsi conservée,
+    # même lorsqu'un modérateur réoriente manuellement le ticket.
+    assigned_service_id = db.Column(
+        db.Integer,
+        db.ForeignKey("services.id"),
+        nullable=True
+    )
+
+    assigned_service = db.relationship(
+        "Service",
+        foreign_keys=[assigned_service_id]
+    )
+
     # Classe et/ou personne(s) concernée(s).
     # Cette précision est facultative.
     classe_personnes_concernees = db.Column(

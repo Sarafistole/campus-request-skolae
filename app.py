@@ -6,7 +6,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from config import Config
 from extensions import db, migrate
-from models import Student, Admin, RequestType, Tag, Ticket
+from models import Student, Admin, RequestType, Tag, Ticket, Service
 from models.ticket import TICKET_STATUSES
 from services.email_service import send_confirmation_email
 
@@ -486,6 +486,55 @@ def admin_ticket_status(public_id):
 
     # ADMIN-02 remplacera ensuite cette redirection par
     # la véritable page de détail du ticket.
+    return redirect(url_for("admin_ticket_demo"))
+
+@app.route(
+    "/admin/tickets/<string:public_id>/service",
+    methods=["POST"]
+)
+def admin_ticket_service(public_id):
+    # La réorientation d'un ticket est réservée
+    # aux administrateurs connectés.
+    admin_id = session.get("admin_id")
+
+    if admin_id is None:
+        return redirect(url_for("admin_login"))
+
+    admin = db.session.get(Admin, admin_id)
+
+    if admin is None:
+        session.pop("admin_id", None)
+        return redirect(url_for("admin_login"))
+
+    ticket = Ticket.query.filter_by(public_id=public_id).first()
+
+    if ticket is None:
+        return "Ticket introuvable.", 404
+
+    service_id_raw = request.form.get("service_id", "").strip()
+
+    # Un identifiant de service est obligatoire.
+    if not service_id_raw:
+        return "Service invalide.", 400
+
+    try:
+        service_id = int(service_id_raw)
+    except ValueError:
+        return "Service invalide.", 400
+
+    # DATABASE-05 constitue le référentiel autorisé.
+    service = db.session.get(Service, service_id)
+
+    if service is None:
+        return "Service invalide.", 400
+
+    # ADMIN-04 :
+    # la décision humaine est enregistrée séparément du
+    # routage automatique afin de conserver la recommandation initiale.
+    ticket.assigned_service_id = service.id
+
+    db.session.commit()
+
     return redirect(url_for("admin_ticket_demo"))
 
 @app.route("/admin/login", methods=["GET", "POST"])
