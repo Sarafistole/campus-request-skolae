@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon compte - Campus Request</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/account.css') }}">
+</head>
+
+<body>
+    <header class="header">
+
+        <div class="logo">
+            Campus Request
+        </div>
+
+        <button type="button" class="menu-button" onclick="toggleMenu()">
+            ☰
+        </button>
+
+        <div class="menu" id="menu">
+
+            <a href="{{ url_for('dashboard') }}">
+                Accueil
+            </a>
+
+            <a href="{{ url_for('account') }}">
+                Mon compte
+            </a>
+
+            <a href="{{ url_for('history') }}">
+                Historique de mes demandes
+            </a>
+
+        </div>
+
+    </header>
+
+    <main class="account-page">
+
+        <section class="account-card">
+
+            <h1>Mon compte</h1>
+            
+            {% if error %}
+                <p class="error-message">{{ error }}</p>
+            {% endif %}
+            
+            <p class="privacy-message">
+                🔒 Votre adresse e-mail reste privée. Toute demande que vous envoyez peut être traitée de manière anonyme.
+            </p>
+
+            <div class="form-group">
+                <label for="email">Adresse e-mail</label>
+                <input
+                    type="email"
+                    id="email"
+                    value="{{ student.email }}"
+                    readonly
+                >
+            </div>
+
+            <div class="separator"></div>
+
+            <h2>Changer mon mot de passe</h2>
+
+            <form method="POST">
+
+                <div class="form-group">
+                    <label for="new_password">Nouveau mot de passe</label>
+                    <input
+                        type="password"
+                        id="new_password"
+                        name="new_password"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="confirm_password">Confirmer le nouveau mot de passe</label>
+                    <input
+                        type="password"
+                        id="confirm_password"
+                        name="confirm_password"
+                        required
+                    >
+                </div>
+
+                <button type="submit">
+                    Modifier mon mot de passe
+                </button>
+
+            </form>
+
+        </section>
+
+    </main>
+
+    <script>
+    function toggleMenu() {
+        const menu = document.getElementById("menu");
+        menu.classList.toggle("active");
+    }
+    </script>
+    
+</body>
+</html>

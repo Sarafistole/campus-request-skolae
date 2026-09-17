@@ -1,0 +1,250 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+:root {
+    --primary: #4F8CFF;
+    --accent: #8B5CF6;
+
+    --bg-main: #0B1020;
+    --bg-secondary: #111827;
+    --card: #172033;
+
+    --text-primary: #F8FAFC;
+    --text-secondary: #94A3B8;
+
+    --error: #EF4444;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--bg-main);
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+}
+
+.account-page {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+}
+
+.account-card {
+    width: 100%;
+    max-width: 650px;
+    padding: 40px;
+    background: var(--card);
+    border-radius: 16px;
+    border: 1px solid rgba(79, 140, 255, 0.15);
+}
+
+.account-card h1 {
+    margin: 0 0 25px;
+    font-size: 32px;
+    font-weight: 700;
+
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.privacy-message {
+    margin: 0 0 30px;
+    padding: 15px 18px;
+    background: rgba(79, 140, 255, 0.1);
+    border-left: 3px solid var(--primary);
+    border-radius: 8px;
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.form-group {
+    margin-bottom: 22px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 13px 15px;
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    border-radius: 8px;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 15px;
+    outline: none;
+}
+
+.form-group input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(79, 140, 255, 0.1);
+}
+
+.form-group input[readonly] {
+    color: var(--text-secondary);
+    cursor: not-allowed;
+}
+
+.separator {
+    height: 1px;
+    margin: 35px 0;
+    background: rgba(148, 163, 184, 0.15);
+}
+
+.account-card h2 {
+    margin: 0 0 25px;
+    font-size: 21px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+button {
+    width: 100%;
+    padding: 14px 20px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    color: white;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+button:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+@media (max-width: 600px) {
+    .account-page {
+        padding: 20px;
+    }
+
+    .account-card {
+        padding: 25px 20px;
+    }
+
+    .account-card h1 {
+        font-size: 27px;
+    }
+}
+
+.error-message {
+    margin: 0 0 20px;
+    padding: 12px 15px;
+    border-radius: 8px;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: var(--error);
+    font-size: 14px;
+}
+
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+
+    height: 70px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 30px;
+
+    background: var(--bg-secondary);
+    border-bottom: 1px solid rgba(79, 140, 255, 0.15);
+
+    z-index: 1000;
+}
+
+.logo {
+    font-size: 20px;
+    font-weight: 700;
+
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.menu-button {
+    width: auto;
+
+    border: none;
+    background: transparent;
+
+    color: var(--text-primary);
+    font-size: 28px;
+
+    cursor: pointer;
+
+    transition: transform 0.25s ease, color 0.25s ease;
+}
+
+.menu-button:hover {
+    color: var(--primary);
+    transform: rotate(90deg);
+}
+
+.menu {
+    position: fixed;
+
+    top: 70px;
+    right: 30px;
+
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+
+    min-width: 230px;
+    padding: 12px;
+
+    background: var(--card);
+    border: 1px solid rgba(79, 140, 255, 0.15);
+    border-radius: 10px;
+
+    z-index: 999;
+}
+
+.menu.active {
+    display: flex;
+}
+
+.menu a {
+    padding: 12px 15px;
+
+    color: var(--text-primary);
+    text-decoration: none;
+
+    font-size: 16px;
+    border-radius: 6px;
+
+    transition: background-color 0.2s ease, padding-left 0.2s ease;
+}
+
+.menu a:hover {
+    background-color: var(--primary);
+    color: var(--bg-main);
+    padding-left: 20px;
+}
+
+

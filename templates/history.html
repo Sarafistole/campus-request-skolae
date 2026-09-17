@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historique de mes demandes - Campus Request</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/history.css') }}">
+</head>
+
+<body>
+    <header class="header">
+
+        <div class="logo">
+            Campus Request
+        </div>
+
+        <button type="button" class="menu-button" onclick="toggleMenu()">
+            ☰
+        </button>
+
+        <div class="menu" id="menu">
+
+            <a href="{{ url_for('dashboard') }}">
+                Accueil
+            </a>
+
+            <a href="{{ url_for('account') }}">
+                Mon compte
+            </a>
+
+            <a href="{{ url_for('history') }}">
+                Historique de mes demandes
+            </a>
+
+        </div>
+
+    </header>
+
+    <main class="history-page">
+
+        <section class="history-card">
+
+            <h1>Historique de mes demandes</h1>
+
+            <p class="history-intro">
+                Retrouvez ici l'ensemble des demandes que vous avez envoyées.
+            </p>
+
+            {% if tickets %}
+
+                <div class="tickets-list">
+
+                    {% for ticket in tickets %}
+
+                        <article class="ticket-item">
+
+                            <div class="ticket-main">
+                                <h2>{{ ticket.title }}</h2>
+
+                                <p class="ticket-type">
+                                    {{ ticket.request_type.name }}
+                                </p>
+
+                                <p class="ticket-date">
+                                    Créée le {{ ticket.created_at.strftime('%d/%m/%Y à %H:%M') }}
+                                </p>
+                            </div>
+
+                            <div class="ticket-status">
+                                <span class="status-badge status-{{ ticket.status|lower }}">
+                                    {{ ticket.status }}
+                                </span>
+                            </div>
+
+                        </article>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <div class="empty-history">
+                    <p>Vous n'avez encore envoyé aucune demande.</p>
+                </div>
+
+            {% endif %}
+
+        </section>
+
+    </main>
+    <script>
+    function toggleMenu() {
+        const menu = document.getElementById("menu");
+        menu.classList.toggle("active");
+    }
+    </script>
+</body>
+</html>

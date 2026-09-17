@@ -26,6 +26,162 @@ migrate.init_app(app, db)
 def home():
     return "Campus Request : WELCOME !"
 
+@app.route("/dashboard", methods=["GET", "POST"])
+def dashboard():
+
+    # Récupération des données nécessaires au formulaire
+    request_types = RequestType.query.order_by(RequestType.name).all()
+    tags = Tag.query.order_by(Tag.name).all()
+
+    # Envoi du formulaire
+    if request.method == "POST":
+
+        # Vérification de la connexion
+        student_id = session.get("student_id")
+
+        if not student_id:
+            return redirect(url_for("login"))
+
+        title = request.form.get("title", "").strip()
+        request_type_id = request.form.get("request_type_id")
+        description = request.form.get("description", "").strip()
+        scope = request.form.get("scope")
+        classe_personnes_concernees = request.form.get(
+            "classe_personnes_concernees",
+            ""
+        ).strip()
+
+        # Récupération des tags sélectionnés
+        tag_ids = request.form.getlist("tag_ids")
+
+        # Vérifications de base
+        if not title or not request_type_id or not description or not scope:
+            return render_template(
+                "dashboard_student.html",
+                request_types=request_types,
+                tags=tags,
+                error="Veuillez remplir tous les champs obligatoires."
+            ), 400
+
+        # Entre 1 et 5 tags
+        if len(tag_ids) < 1 or len(tag_ids) > 5:
+            return render_template(
+                "dashboard_student.html",
+                request_types=request_types,
+                tags=tags,
+                error="Sélectionnez entre 1 et 5 sujets."
+            ), 400
+
+        # Vérification du type de demande
+        request_type = RequestType.query.get(request_type_id)
+
+        if request_type is None:
+            return render_template(
+                "dashboard_student.html",
+                request_types=request_types,
+                tags=tags,
+                error="Type de demande invalide."
+            ), 400
+
+        # Récupération des tags
+        selected_tags = Tag.query.filter(
+            Tag.id.in_(tag_ids)
+        ).all()
+
+        if len(selected_tags) != len(set(tag_ids)):
+            return render_template(
+                "dashboard_student.html",
+                request_types=request_types,
+                tags=tags,
+                error="Un ou plusieurs sujets sont invalides."
+            ), 400
+
+        # Création du ticket
+        ticket = Ticket(
+            student_id=student_id,
+            request_type_id=request_type.id,
+            title=title,
+            description=description,
+            scope=scope,  # ← ajoute cette ligne
+            classe_personnes_concernees=classe_personnes_concernees or None,
+            status="NEW"
+        )
+
+        # Association des tags
+        ticket.tags = selected_tags
+
+        db.session.add(ticket)
+        db.session.commit()
+
+        return redirect(url_for("dashboard"))
+
+    return render_template(
+        "dashboard_student.html",
+        request_types=request_types,
+        tags=tags
+    )
+
+@app.route("/account", methods=["GET", "POST"])
+def account():
+    student_id = session.get("student_id")
+
+    if not student_id:
+        return redirect(url_for("login"))
+
+    student = Student.query.get(student_id)
+
+    if student is None:
+        session.pop("student_id", None)
+        return redirect(url_for("login"))
+
+    if request.method == "POST":
+        new_password = request.form.get("new_password", "")
+        confirm_password = request.form.get("confirm_password", "")
+
+        if not new_password or not confirm_password:
+            return render_template(
+                "account.html",
+                student=student,
+                error="Veuillez remplir les deux champs."
+            ), 400
+
+        if new_password != confirm_password:
+            return render_template(
+                "account.html",
+                student=student,
+                error="Les deux mots de passe ne correspondent pas."
+            ), 400
+
+        # Le hash du nouveau mot de passe sera ajouté ici
+        # avec la méthode déjà utilisée pour les étudiants.
+
+        student.password_hash = generate_password_hash(new_password)
+
+        db.session.commit()
+
+        return redirect(url_for("account"))
+
+    return render_template("account.html", student=student)
+
+
+@app.route("/history")
+def history():
+    student_id = session.get("student_id")
+
+    if not student_id:
+        return redirect(url_for("login"))
+
+    tickets = (
+        Ticket.query
+        .filter_by(student_id=student_id)
+        .order_by(Ticket.created_at.desc())
+        .all()
+    )
+
+    return render_template(
+        "history.html",
+        tickets=tickets
+    )
 
 @app.route("/auth")
 def auth_home():
@@ -112,6 +268,37 @@ def register():
 
 @app.route("/confirm", methods=["GET", "POST"])
 def confirm():
+    # Confirmation directe depuis le lien reçu par email.
+    url_email = request.args.get("email", "").strip().lower()
+    url_code = request.args.get("code", "").strip()
+
+    if url_email and url_code:
+        student = Student.query.filter_by(email=url_email).first()
+
+        if student is None:
+            return render_template(
+                "confirm.html",
+                error="Lien de confirmation invalide ou expiré."
+            ), 400
+
+        if not secrets.compare_digest(
+            url_code,
+            student.confirmation_code or ""
+        ):
+            return render_template(
+                "confirm.html",
+                error="Lien de confirmation invalide ou expiré."
+            ), 400
+
+        student.is_confirmed = True
+        student.confirmation_code = None
+        db.session.commit()
+
+        session.pop("pending_student_email", None)
+
+        return redirect(url_for("login"))
+
+    # Confirmation manuelle avec le code à 6 chiffres.
     email = session.get("pending_student_email")
 
     if not email:
@@ -126,7 +313,10 @@ def confirm():
     if request.method == "GET":
         return render_template("confirm.html")
 
-    submitted_code = request.form.get("confirmation_code", "").strip()
+    submitted_code = request.form.get(
+        "confirmation_code",
+        ""
+    ).strip()
 
     if not secrets.compare_digest(
         submitted_code,
