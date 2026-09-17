@@ -63,6 +63,13 @@ class Ticket(db.Model):
         nullable=False
     )
 
+    # Personne(s) concernée(s) par la demande.
+    # Valeurs autorisées : SELF / INDIVIDUAL / GROUP
+    scope = db.Column(
+        db.String(20),
+        nullable=False
+    )
+
     # Classe et/ou personne(s) concernée(s) - champ facultatif
     classe_personnes_concernees = db.Column(
         db.String(255),
