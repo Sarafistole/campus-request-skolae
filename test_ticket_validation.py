@@ -179,7 +179,144 @@ with app.test_client() as client:
     )
 
     # ---------------------------------------------------------
-    # 11. Session avec étudiant inexistant
+    # 11. Titre composé uniquement de ponctuation
+    # ---------------------------------------------------------
+    data = valid_data.copy()
+    data["title"] = "???????"
+
+    run_test(
+        "Titre ponctuation",
+        client,
+        data,
+        400
+    )
+
+    # ---------------------------------------------------------
+    # 12. Titre trop court
+    # ---------------------------------------------------------
+    data = valid_data.copy()
+    data["title"] = "abc"
+
+    run_test(
+        "Titre trop court",
+        client,
+        data,
+        400
+    )
+
+    # ---------------------------------------------------------
+    # 13. Titre composé de caractères répétés
+    # ---------------------------------------------------------
+    data = valid_data.copy()
+    data["title"] = "aaaaaaaaaa"
+
+    run_test(
+        "Titre répétitif",
+        client,
+        data,
+        400
+    )
+
+    # ---------------------------------------------------------
+    # 14. Titre composé uniquement d'espaces
+    # ---------------------------------------------------------
+    data = valid_data.copy()
+    data["title"] = "       "
+
+    run_test(
+        "Titre espaces",
+        client,
+        data,
+        400
+    )
+
+    # ---------------------------------------------------------
+    # 15. Description composée uniquement d'espaces
+    # ---------------------------------------------------------
+    data = valid_data.copy()
+    data["description"] = " " * 100
+
+    run_test(
+        "Description espaces",
+        client,
+        data,
+        400
+    )
+
+    # ---------------------------------------------------------
+    # 16. Description trop courte
+    # ---------------------------------------------------------
+    data = valid_data.copy()
+    data["description"] = "Texte trop court"
+
+    run_test(
+        "Description trop courte",
+        client,
+        data,
+        400
+    )
+
+    # ---------------------------------------------------------
+    # 17. Description composée uniquement de ponctuation
+    # ---------------------------------------------------------
+    data = valid_data.copy()
+    data["description"] = "?" * 100
+
+    run_test(
+        "Description ponctuation",
+        client,
+        data,
+        400
+    )
+
+    # ---------------------------------------------------------
+    # 18. Description répétitive
+    # ---------------------------------------------------------
+    data = valid_data.copy()
+    data["description"] = "ab" * 20
+
+    run_test(
+        "Description répétitive",
+        client,
+        data,
+        400
+    )
+
+    # ---------------------------------------------------------
+    # 19. Description avec témoignage sensible mais exploitable
+    # ---------------------------------------------------------
+    data = valid_data.copy()
+    data["description"] = (
+        "Un étudiant m'a insulté et harcelé à plusieurs reprises. "
+        "Je souhaite signaler les faits et obtenir de l'aide."
+    )
+
+    run_test(
+        "Témoignage sensible",
+        client,
+        data,
+        302
+    )
+
+    # ---------------------------------------------------------
+    # 20. Description valide
+    # ---------------------------------------------------------
+    data = valid_data.copy()
+    data["description"] = (
+        "Depuis plusieurs semaines, je rencontre des difficultés "
+        "avec mon emploi du temps. Je souhaite obtenir de l'aide "
+        "pour trouver une solution adaptée à ma situation."
+    )
+
+    run_test(
+        "Description valide",
+        client,
+        data,
+        302
+    )
+
+    # ---------------------------------------------------------
+    # 21. Session avec étudiant inexistant
     # ---------------------------------------------------------
     with client.session_transaction() as session:
         session["student_id"] = 999999
