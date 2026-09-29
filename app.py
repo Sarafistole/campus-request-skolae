@@ -9,6 +9,8 @@ from extensions import db, migrate
 from models import Student, Admin, RequestType, Tag, Ticket, Service
 from models.ticket import TICKET_STATUSES
 from services.email_service import send_confirmation_email
+from services.student_ticket_validation import (has_significant_content,
+    count_significant_chars,is_repetitive, validate_title, validate_description)
 
 
 app = Flask(__name__)
@@ -72,21 +74,23 @@ def dashboard():
             ), 400
 
         # Limite du titre
-        if len(title) > 255:
+        title_error = validate_title(title)
+        if title_error:
             return render_template(
                 "dashboard_student.html",
                 request_types=request_types,
                 tags=tags,
-                error="Le titre ne doit pas dépasser 255 caractères."
+                error=title_error
             ), 400
 
         # Limite de la description
-        if len(description) > 5000:
+        description_error = validate_description(description)
+        if description_error:
             return render_template(
                 "dashboard_student.html",
                 request_types=request_types,
                 tags=tags,
-                error="La description ne doit pas dépasser 5000 caractères."
+                error=description_error
             ), 400
 
         # Vérification du périmètre
